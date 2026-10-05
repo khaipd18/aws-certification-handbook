@@ -52,7 +52,7 @@
 ### AWS Infrastructure Composer
 - **Là gì:** thiết kế và build ứng dụng serverless **trực quan**; deploy hạ tầng mà không cần là chuyên gia AWS.
 - **Dùng khi nào:** cấu hình cách tài nguyên tương tác; **sinh IaC bằng CloudFormation**; import template CloudFormation/SAM có sẵn để xem trực quan.
-- **Vì sao quan trọng:** tên cũ **AWS Application Composer** (exam guide xếp tên cũ vào out-of-scope).
+- **Vì sao quan trọng:** tên cũ **AWS Application Composer** (exam guide xếp tên cũ vào out-of-scope). ⚠️ **Console riêng tắt ngày 07/12/2026** → dùng trình thiết kế trực quan trong **AWS Toolkit for VS Code** hoặc trình soạn IaC nhúng trong console.
 
 ### AWS Device Farm
 - **Là gì:** test web và mobile app trên **trình duyệt desktop, điện thoại và tablet thật** (không phải giả lập).
@@ -327,3 +327,4 @@
 - 7 Rs migration strategies: https://docs.aws.amazon.com/prescriptive-guidance/latest/strategy-migration/detailed-portfolio-discovery.html
 - CLF-C02 in-scope services (WorkSpaces Secure Browser, License Manager, AppStream 2.0): https://docs.aws.amazon.com/aws-certification/latest/cloud-practitioner-02/clf-02-in-scope-services.html
 - CLF-C02 out-of-scope services (Device Farm, Ground Station, Application Composer): https://docs.aws.amazon.com/aws-certification/latest/cloud-practitioner-02/clf-02-out-of-scope-services.html
+- Infrastructure Composer end of support (console riêng tắt 07/12/2026): https://docs.aws.amazon.com/infrastructure-composer/latest/dg/infrastructure-composer-end-of-support.html

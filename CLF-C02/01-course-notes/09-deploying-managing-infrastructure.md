@@ -31,7 +31,7 @@
 ### AWS Infrastructure Composer
 - **Là gì:** công cụ **trực quan** để thiết kế và xem quan hệ giữa các tài nguyên trong CloudFormation template (vd: stack WordPress).
 - **Dùng khi nào:** cần nhìn sơ đồ tài nguyên và liên kết.
-- **Vì sao quan trọng:** tên cũ là "AWS Application Composer", hiện exam guide CLF-C02 xếp tên cũ vào out-of-scope. Chi tiết ở chương 18.
+- **Vì sao quan trọng:** tên cũ là "AWS Application Composer", hiện exam guide CLF-C02 xếp tên cũ vào out-of-scope. ⚠️ **Console riêng của Infrastructure Composer tắt ngày 07/12/2026** → trình thiết kế trực quan nay nằm trong **AWS Toolkit for VS Code** và trình soạn IaC nhúng trong các trang console. Chi tiết ở chương 18.
 
 ### AWS Cloud Development Kit (CDK)
 - **Là gì:** định nghĩa hạ tầng bằng ngôn ngữ quen thuộc (JavaScript/TypeScript, Python, Java, .NET...); code được "compile" thành template CloudFormation (JSON/YAML).
@@ -279,3 +279,4 @@
 - AWS Systems Manager Session Manager: https://docs.aws.amazon.com/systems-manager/latest/userguide/session-manager.html
 - AWS CDK: https://docs.aws.amazon.com/cdk/v2/guide/home.html
 - AWS Elastic Beanstalk: https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/Welcome.html
+- Infrastructure Composer end of support (console riêng tắt 07/12/2026): https://docs.aws.amazon.com/infrastructure-composer/latest/dg/infrastructure-composer-end-of-support.html
