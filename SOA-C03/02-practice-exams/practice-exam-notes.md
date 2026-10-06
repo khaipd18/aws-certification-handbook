@@ -1,7 +1,7 @@
 # AWS SOA-C03 — Sổ tay cốt lõi & kiến thức dễ nhầm
 
 > Tổng hợp từ **520 câu hỏi (8 đề thi thử)**, gộp theo **nhóm dịch vụ**, không tách theo đề.
-> **🎯 = ý tưởng cốt lõi cần khắc sâu** · **⚠️ = kiến thức liên quan / dễ nhầm trong đề** · **📌 = cập nhật 10/2026** (đề còn dùng tên/số liệu cũ: khi thi cứ chọn theo logic đề, nhưng biết thực tế đã đổi) · **❓ = đáp án đề đáng ngờ hoặc chưa kiểm chứng được**.
+> **🎯 = ý tưởng cốt lõi cần khắc sâu** · **⚠️ = kiến thức liên quan / dễ nhầm trong đề** · **📌 = cập nhật theo docs AWS hiện hành (10/2026)** · **❓ = đáp án đề đáng ngờ hoặc chưa kiểm chứng được**.
 > Xem **§40 (Phụ lục)** để tra nhanh dịch vụ hay xuất hiện ở đáp án SAI và các đáp án **không tồn tại**.
 >
 > **Ôn cấp tốc trước khi thi:** §41 (Nguyên tắc làm bài) → §42 (Bảng so sánh dễ nhầm) → §43 (Từ khóa → đáp án) → §44 (Con số & kết hợp bất khả thi).
@@ -131,7 +131,7 @@
 
 ## 3. CloudWatch Alarms
 
-🎯 **Alarm action hợp lệ:** **SNS topic** · **EC2 action** (stop/terminate/reboot/recover) · **Auto Scaling action** · **SSM OpsItem**. 📌 Thực tế hiện hành còn có: **gọi trực tiếp Lambda function**, tạo **incident trong SSM Incident Manager**, và khởi chạy **CloudWatch investigations**. Đề cũ coi "chỉ 4 loại": đọc kỹ đáp án.
+🎯 **Alarm action hợp lệ:** **SNS topic** · **EC2 action** (stop/terminate/reboot/recover) · **Auto Scaling action** · **SSM OpsItem** · **Lambda function** · **incident trong SSM Incident Manager** · **CloudWatch investigations**.
 
 ⚠️ **SQS KHÔNG phải target của CloudWatch Alarm.** **SNS không trực tiếp khởi chạy SSM Automation** → phải qua **EventBridge** (bắt alarm state change) hoặc Lambda.
 
@@ -229,7 +229,7 @@
 
 ⚠️ Gắn IAM Role cho rule có target Lambda → role bị bỏ qua; Lambda **không hề được gọi** → thiếu **resource-based policy** cho `events.amazonaws.com` với `lambda:InvokeFunction` (không phải thiếu execution role).
 
-⚠️ ❓ Đề nói "EventBridge **không gọi trực tiếp** được `TerminateInstances`, phải qua Lambda/SSM". 📌 Thực tế EventBridge có **built-in target** (tạo qua Console) cho EC2: `RebootInstances`, `StopInstances`, `TerminateInstances`, `CreateSnapshot`. Khi đề có đáp án Lambda/SSM Automation thì vẫn hợp lệ; chỉ đừng coi "built-in target EC2" là đáp án bịa.
+📌 EventBridge có **built-in target** (tạo qua Console) cho EC2: `RebootInstances`, `StopInstances`, `TerminateInstances`, `CreateSnapshot`. Lambda hoặc SSM Automation làm được việc tương tự khi cần logic riêng.
 
 ⚠️ **AWS Config không phù hợp cho cảnh báo real-time.** Trusted Advisor + EventBridge: TA phát event khi check đổi trạng thái (vd dùng > 80% service limit).
 
@@ -239,17 +239,17 @@
 
 | Dịch vụ | Phạm vi |
 | --- | --- |
-| **Service health** (trước đây Service Health Dashboard, `status.aws.amazon.com`) | Trạng thái **chung** của mọi dịch vụ/Region, công khai |
-| **AWS Health Dashboard – Your account health** (trước đây **Personal Health Dashboard**) | Event ảnh hưởng **resource của bạn**, kèm hướng dẫn khắc phục, báo trước lịch bảo trì |
+| **Service health** | Trạng thái **chung** của mọi dịch vụ/Region, công khai |
+| **AWS Health Dashboard – Your account health** | Event ảnh hưởng **resource của bạn**, kèm hướng dẫn khắc phục, báo trước lịch bảo trì |
 | **AWS Health Organizational View** | Gộp Health event **của mọi member account** về management/delegated admin account |
 
-📌 "Personal Health Dashboard" và "Service Health Dashboard" nay gộp thành **AWS Health Dashboard** (hai phần: service health và account health). Đề cũ còn dùng tên PHD.
+📌 **AWS Health Dashboard** gồm hai phần: service health và account health.
 
 🎯 Mặc định Health event chỉ thuộc **từng account** → EventBridge rule ở payer account **không nhận** event của member → **bật Organizational View** qua AWS Organizations. ⚠️ CloudWatch cross-account observability chỉ gộp metrics/logs/traces, **không gộp Health event**.
 
 🎯 **AWS Health API** = truy cập bằng chương trình chính dữ liệu của Health Dashboard → tích hợp vào công cụ nội bộ. Gọi từ account không đủ gói Support → lỗi **`SubscriptionRequiredException`**.
 
-📌 Đề ghi "cần gói **Business hoặc Enterprise**". Hiện hành: cần **Business Support+, Enterprise Support hoặc Unified Operations** (khách chưa chuyển gói vẫn dùng được với Business, Enterprise On-Ramp, Enterprise). Gói Developer ngừng từ **01/01/2027**.
+📌 Cần **Business Support+, Enterprise Support hoặc Unified Operations**. Developer, Business, Enterprise On-Ramp ngừng từ **01/01/2027**.
 
 ⚠️ Không chạy diagnostics trực tiếp bên trong Health Dashboard (chỉ gắn Lambda khi event được route). Trusted Advisor notification chỉ là email hằng tuần.
 
@@ -273,7 +273,7 @@
 
 🎯 **Sinh IAM policy least-privilege** → bật CloudTrail + **IAM Access Analyzer policy generation** (phân tích tới 90 ngày log). Xem §30.
 
-📌 **CloudTrail Lake** không nhận khách mới từ **31/05/2026** (khách cũ vẫn dùng). Phân tích log dài hạn cho khách mới: trail → S3 → Athena.
+📌 **CloudTrail Lake** không nhận khách mới từ **31/05/2026** (khách đang dùng vẫn tiếp tục). Phân tích log dài hạn cho khách mới: trail → S3 → Athena.
 
 ---
 
@@ -522,9 +522,9 @@
 | **Dedicated Instance** | Phần cứng riêng cho **một account** | **Single-tenant rẻ nhất** |
 | **Dedicated Host** | Cả server vật lý, thấy socket/core, kiểm soát vị trí đặt | **License theo socket/core/VM** (Windows Server, SQL Server, RHEL...) |
 
-📌 Đề cũ nói Spot bị thu hồi "khi giá vượt max price": nay nguyên nhân chính là **EC2 cần lại capacity**; AWS khuyên không đặt max price.
+📌 Spot bị thu hồi chủ yếu khi **EC2 cần lại capacity**; AWS khuyên không đặt max price.
 
-⚠️ Capacity Reservation: không cam kết 1/3 năm, không giảm giá, không dùng với Dedicated Host, không transfer giữa account (nhưng **share được qua RAM**). 📌 Đề cũ ghi "không dùng với Placement Group": nay tạo được Capacity Reservation trong **cluster placement group** (spread/partition vẫn không).
+⚠️ Capacity Reservation: không cam kết 1/3 năm, không giảm giá, không dùng với Dedicated Host, không transfer giữa account (nhưng **share được qua RAM**). 📌 Tạo được Capacity Reservation trong **cluster placement group** (spread/partition thì không).
 
 🎯 **Spot interruption behavior:** chỉ **Stop / Hibernate / Terminate** (mặc định). **Không có "Reboot".** Không bật được termination protection cho Spot.
 
@@ -548,9 +548,9 @@
 | Loại instance | Đổi instance type |
 | --- | --- |
 | **EBS-backed** | **Stop → đổi type → start**; Instance ID giữ nguyên, chuyển sang phần cứng mới |
-| **Instance store-backed** | **Không đổi trực tiếp**: tạo AMI → launch instance mới đúng type → **chuyển Elastic IP** → terminate cái cũ |
+| **Instance store-backed** | **Không đổi trực tiếp**: tạo AMI → launch instance mới đúng type → **chuyển Elastic IP** → terminate instance gốc |
 
-⚠️ Stop/start **mất public IPv4 cũ** → giữ dịch vụ không gián đoạn phải dùng **Elastic IP**. Giữ nguyên private IPv4, EIP, IPv6. Instance trong ASG: **suspend scaling processes** khi resize (instance stopped bị coi là unhealthy). Luôn có downtime.
+⚠️ Stop/start **mất public IPv4 đang dùng** → giữ dịch vụ không gián đoạn phải dùng **Elastic IP**. Giữ nguyên private IPv4, EIP, IPv6. Instance trong ASG: **suspend scaling processes** khi resize (instance stopped bị coi là unhealthy). Luôn có downtime.
 
 | Lỗi launch | Nghĩa | Xử lý |
 | --- | --- | --- |
@@ -614,7 +614,7 @@
 | Process bị suspend | Hậu quả |
 | --- | --- |
 | **Launch** | Không scale out |
-| **Terminate** | Không scale in; nếu **AZRebalance vẫn chạy** thì rebalance launch mới mà không terminate cũ → ASG phình **tới 10% trên max** |
+| **Terminate** | Không scale in; nếu **AZRebalance vẫn chạy** thì rebalance launch mới mà không terminate instance hiện có → ASG phình **tới 10% trên max** |
 | **AZRebalance** | Không tự cân bằng lại AZ |
 | **ReplaceUnhealthy** | Không thay instance unhealthy |
 
@@ -664,7 +664,7 @@
 
 ⚠️ "Infrastructure Load Balancer" không tồn tại.
 
-🎯 **NLB và AZ:** mỗi AZ một subnet, ELB tạo node + ENI trong subnet đó; với internet-facing NLB có thể gán **một EIP mỗi subnet lúc tạo**. ⚠️ ❓ Đề nói "không thể tắt AZ của NLB sau khi tạo, chỉ thêm được". 📌 Docs hiện hành cho phép **gỡ subnet (AZ) khỏi NLB** (trừ khi NLB có VPC endpoint association đang hoạt động; gỡ mất tới 3 phút). Khi thi, chọn theo logic đề.
+🎯 **NLB và AZ:** mỗi AZ một subnet, ELB tạo node + ENI trong subnet đó; với internet-facing NLB có thể gán **một EIP mỗi subnet lúc tạo**. 📌 Thêm hoặc **gỡ subnet (AZ) khỏi NLB** được sau khi tạo (trừ khi NLB có VPC endpoint association đang hoạt động; gỡ mất tới 3 phút).
 
 ### Cấu trúc ALB
 
@@ -678,9 +678,9 @@
 
 🎯 **Custom health check** → đặt **Health Check Path** (vd `/health`) trên target group; app trả 200 = healthy. ⚠️ ALB không đọc trạng thái từ S3/ElastiCache/API Gateway.
 
-🎯 **Trình duyệt cũ lỗi SSL với ALB** → đổi **Security Policy (SSL negotiation)** sang policy có cipher/TLS cũ (vd `ELBSecurityPolicy-TLS-1-0-2015-04`). ⚠️ Không phải vấn đề certificate; không cần ALB thứ hai.
+🎯 **Client chỉ hỗ trợ TLS thấp lỗi SSL với ALB** → đổi **Security Policy (SSL negotiation)** sang policy có cipher/TLS phiên bản thấp (vd `ELBSecurityPolicy-TLS-1-0-2015-04`). ⚠️ Không phải vấn đề certificate; không cần ALB thứ hai.
 
-🎯 **Ép HTTPS mà không phá user đang dùng `http://`** → thêm **listener HTTPS 443** (forward tới target group, cert ACM) + đổi default rule của **listener HTTP 80 thành REDIRECT sang 443**. ⚠️ Xóa listener 80 phá user cũ; không gắn được cert vào listener HTTP.
+🎯 **Ép HTTPS mà không phá user đang dùng `http://`** → thêm **listener HTTPS 443** (forward tới target group, cert ACM) + đổi default rule của **listener HTTP 80 thành REDIRECT sang 443**. ⚠️ Xóa listener 80 phá user đang dùng `http://`; không gắn được cert vào listener HTTP.
 
 | Header | Cho biết |
 | --- | --- |
@@ -782,7 +782,7 @@
 | **Performance Insights** | DB engine | **DB load**, top SQL, wait event; không có metric OS |
 | **Event Subscriptions** | Sự kiện RDS | SNS khi instance, snapshot, parameter group, SG thay đổi |
 
-📌 **Performance Insights** nay nằm trong **CloudWatch Database Insights** (RDS bật Database Insights mặc định ở Advanced mode). Đề cũ vẫn gọi là Performance Insights; vai trò "DB load, top SQL" không đổi.
+📌 Phân tích **DB load, top SQL** → **CloudWatch Database Insights** (RDS bật mặc định ở Advanced mode).
 
 ---
 
@@ -814,7 +814,7 @@
 
 🎯 **Aurora Serverless: bật log qua cluster parameter group** (slow query, general, audit log) → tự publish lên CloudWatch Logs; log không bật mặc định. ❓ Nhận định "không có instance cố định nên không xem log trên RDS Console" là của **Aurora Serverless v1**; v2 chạy như DB instance thông thường.
 
-⚠️ ❓ Đề nói "RDS MySQL/MariaDB không có nhiều writer, chỉ Aurora có multi-master". Multi-master của Aurora chỉ có ở Aurora MySQL v1 (MySQL 5.6), bản này đã hết vòng đời 28/02/2023. Khi thi vẫn chọn "RDS không hỗ trợ nhiều writer".
+⚠️ RDS MySQL/MariaDB chỉ có **một writer**; read replica chỉ đọc.
 
 ---
 
@@ -849,7 +849,7 @@
 
 🎯 **DR đa Region** → bật **DynamoDB Streams** + thêm Region vào **Global Table** (multi-active). ⚠️ DAX là cache cùng Region; GSI là pattern truy vấn trong bảng; PITR là backup cùng Region.
 
-🎯 **Truy cập DynamoDB cross-account** → Account B tạo **IAM role** (quyền query) + **trust policy** cho role của EC2 ở Account A → EC2 **`sts:AssumeRole`**. ❓ Đề nói "DynamoDB không có resource-based policy": 📌 DynamoDB nay **đã hỗ trợ resource-based policy** cho bảng và stream; khi đáp án chỉ có AssumeRole là hợp lệ thì vẫn chọn AssumeRole (an toàn nhất). ⚠️ Static access key là rủi ro; `iam:PassRole` không dùng cho mô hình này.
+🎯 **Truy cập DynamoDB cross-account** → Account B tạo **IAM role** (quyền query) + **trust policy** cho role của EC2 ở Account A → EC2 **`sts:AssumeRole`**. 📌 DynamoDB cũng hỗ trợ **resource-based policy** cho bảng và stream, là cách thứ hai để cấp quyền cross-account. ⚠️ Static access key là rủi ro; `iam:PassRole` không dùng cho mô hình này.
 
 🎯 **Tích hợp DynamoDB với CSDL quan hệ có sẵn** → **DynamoDB Streams + Lambda** (write-through về SQL). ⚠️ DAX chỉ cache cho DynamoDB; Kinesis một chiều; ElastiCache không tích hợp hai bên.
 
@@ -925,7 +925,7 @@
 
 ### Object Lock
 
-🎯 Object Lock (WORM) **chỉ trên bucket bật versioning**; retention và legal hold áp cho **từng object version**. Đặt explicit trên version bằng **"Retain Until Date"**; bucket default dùng **duration** (ngày/năm). **Explicit ghi đè default**; các version khác nhau có retention khác nhau (PUT version mới 60 ngày không ảnh hưởng version cũ 30 ngày).
+🎯 Object Lock (WORM) **chỉ trên bucket bật versioning**; retention và legal hold áp cho **từng object version**. Đặt explicit trên version bằng **"Retain Until Date"**; bucket default dùng **duration** (ngày/năm). **Explicit ghi đè default**; các version khác nhau có retention khác nhau (PUT version mới 60 ngày không ảnh hưởng version trước 30 ngày).
 
 | Mode | Ai bypass được? | Dùng khi |
 | --- | --- | --- |
@@ -938,7 +938,7 @@
 
 🎯 **Giữ báo cáo đúng 5 năm rồi tự xóa** → **Object Lock "Retain Until Date" = ngày tạo + 5 năm** + **lifecycle expire sau 5 năm**.
 
-📌 **Glacier Vault Lock** (WORM ở cấp vault, policy bất biến sau khi lock; quy trình initiate → 24 giờ test → complete) dựa trên **Glacier vault**, nay **không nhận khách mới** → khách mới dùng **S3 Object Lock** (có thể trên class Glacier). Đề cũ chọn Vault Lock cho "WORM, immutable, chứng minh compliance".
+📌 WORM, immutable, chứng minh compliance → **S3 Object Lock** (dùng được với storage class Glacier). Glacier vault (có Vault Lock) **không nhận khách mới**.
 
 | Cơ chế chống sửa/xóa | Bảo vệ | Hạn chế |
 | --- | --- | --- |
@@ -1013,7 +1013,7 @@
 
 🎯 **`BurstBalance` = 0 trên gp2 500 GB, cần 3,000 IOPS, rẻ nhất** → **đổi sang gp3**. Cần **10,000 IOPS rẻ nhất** → **gp3 provision 10,000 IOPS** (io2 đắt, st1/sc1 chỉ vài trăm IOPS). **Chính sách cấm đổi volume type** → **tăng dung lượng gp2** (3 IOPS/GiB). ⚠️ Thêm ENI, placement group, "Transfer Acceleration cho EBS" (chỉ có ở S3) đều sai.
 
-📌 Đề ghi gp3 "provision tới 16,000 IOPS": nay gp3 tối đa **80,000 IOPS / 2,000 MiB/s / 64 TiB**.
+📌 gp3 tối đa **80,000 IOPS / 2,000 MiB/s / 64 TiB**.
 
 🎯 **Best practice:** volume **riêng cho OS và cho data**. **Snapshot chỉ chụp dữ liệu đã ghi xuống volume** (không có cache app/OS) → nhất quán: detach sạch hoặc shutdown (root) rồi snapshot. Volume non-root mặc định **`DeleteOnTermination = false`** → dữ liệu còn sau terminate (nhớ tự xóa để khỏi tốn phí). **Instance store mất dữ liệu khi stop, hibernate, terminate.** EBS encryption **hỗ trợ boot volume**. Snapshot nằm trong S3 nhưng **không truy cập qua S3 API**, chỉ qua EC2 API.
 
@@ -1077,7 +1077,7 @@
 
 ⚠️ Loại trừ: Glacier (archive chậm) · EFS (NFS cho EC2, không có backend S3) · EBS (gắn EC2) · S3 thuần (object API).
 
-🎯 **PB-scale, data center thiếu băng thông** (đề cũ) → **Snowball Edge Storage Optimized → S3 → lifecycle → Glacier** (không copy thẳng vào Glacier). 📌 AWS **không nhận khách mới đặt thiết bị Snow Family** → thay bằng **DataSync** (online), **AWS Data Transfer Terminal** (mang ổ tới cơ sở AWS) hoặc partner.
+🎯 **PB-scale, data center thiếu băng thông** → **DataSync** (online), **AWS Data Transfer Terminal** (mang ổ tới cơ sở AWS) hoặc partner; đưa vào S3 rồi lifecycle sang Glacier (không copy thẳng vào Glacier). 📌 Snow Family **không nhận khách mới**.
 
 | Tình huống | Giải pháp |
 | --- | --- |
@@ -1147,7 +1147,7 @@
 
 🎯 **Ép MFA cho AWS CLI** → long-term access key không mang ngữ cảnh MFA → `aws sts get-session-token --serial-number <MFA-ARN> --token-code <code>` rồi dùng **credential tạm** đó. ⚠️ Đăng nhập Console có MFA không ảnh hưởng CLI.
 
-🎯 **Mất thiết bị MFA của root** → "Trouble signing in?" → **xác minh email + số điện thoại** → gỡ MFA cũ, đăng ký mới. ⚠️ IAM user (kể cả admin) không reset được MFA của root; resync chỉ khi thiết bị còn nhưng lệch giờ. **Đổi Support plan chỉ root làm được.**
+🎯 **Mất thiết bị MFA của root** → "Trouble signing in?" → **xác minh email + số điện thoại** → gỡ MFA đã mất, đăng ký mới. ⚠️ IAM user (kể cả admin) không reset được MFA của root; resync chỉ khi thiết bị còn nhưng lệch giờ. 📌 Đổi Support plan chỉ cần **quyền IAM** phù hợp, không bắt buộc root.
 
 🎯 **Sinh policy least-privilege từ hoạt động thật** → **CloudTrail + IAM Access Analyzer policy generation** (tới 90 ngày). ⚠️ Chưa bật CloudTrail thì không có dữ liệu; Security Hub/EventBridge không sinh policy.
 
@@ -1197,7 +1197,7 @@
 | **AWS managed key** | **Tự động mỗi năm** | Không sửa key policy, không share cross-account |
 | **Customer managed key** | Bật automatic rotation, **rotation period tùy chỉnh (mặc định 365 ngày)** + **on-demand rotation** | Toàn quyền: key policy, bật/tắt, audit, share |
 
-📌 Đề ghi "**AWS managed key xoay mỗi 3 năm**" → **sai so với docs hiện hành: AWS managed key xoay hằng năm**. Đề ghi "customer managed key xoay mỗi 1 năm" → nay **chỉnh được rotation period**.
+📌 **AWS managed key xoay hằng năm**; customer managed key **chỉnh được rotation period** (90–2,560 ngày, mặc định 365).
 
 🎯 **Mã hóa at-rest + xoay khóa ít nhất hằng năm, ít công nhất** → **SSE-KMS với customer managed key + automatic rotation**. Rotation tự động chỉ cho key sinh trong KMS. 📌 Key có **imported key material** không có rotation tự động nhưng **nay rotate on-demand được**. **SSE-C** và **client-side** không có rotation tự động.
 
@@ -1205,7 +1205,7 @@
 
 🎯 **Built-in rotation** (Lambda rotation template do AWS cung cấp) cho **RDS, DocumentDB, Redshift** → **xoay mật khẩu master RDS tự động, ít công nhất**. ⚠️ EMR/CloudFormation/ECS chỉ đọc secret; Parameter Store SecureString không auto-rotate; IAM DB authentication không xoay mật khẩu master.
 
-🎯 **Xóa rồi tạo lại secret cùng tên ngay** → CLI `DeleteSecret` với **`ForceDeleteWithoutRecovery`** (không khôi phục được). 📌 Đề ghi recovery window "mặc định 7 ngày": docs ghi **mặc định 30 ngày** (cấu hình 7–30 ngày).
+🎯 **Xóa rồi tạo lại secret cùng tên ngay** → CLI `DeleteSecret` với **`ForceDeleteWithoutRecovery`** (không khôi phục được). 📌 Recovery window **mặc định 30 ngày** (cấu hình 7–30 ngày).
 
 ### ACM
 
@@ -1217,7 +1217,7 @@
 
 🎯 ACM chỉ cấp cert **SSL/TLS** (không dùng cho mã hóa email); không cấp cho domain của Amazon (`amazonaws.com`, `cloudfront.net`...). Private CA cert dùng cho tài nguyên nội bộ.
 
-🎯 **End-to-end encryption ALB → EC2** (theo đề): cài **cert bên thứ ba lên EC2**, import vào ACM để gắn cho ALB; self-signed chỉ cho test. 📌 Đề nói "**không cài ACM cert lên EC2, không tải được private key**": từ 2025 ACM có **exportable public certificate**, export được cert + chain + private key (mã hóa bằng passphrase) để dùng ở bất kỳ đâu, kể cả EC2. Cert ACM thông thường (không đánh dấu exportable) vẫn không export được.
+🎯 **End-to-end encryption ALB → EC2:** cert trên EC2 là **cert bên thứ ba** (import vào ACM để gắn cho ALB) hoặc **ACM exportable public certificate** (export cert + chain + private key mã hóa bằng passphrase). Cert ACM thông thường không export được; self-signed chỉ cho test.
 
 ---
 
@@ -1234,7 +1234,7 @@
 | **Security Hub (CSPM)** | Tổng hợp finding + chạy standard (CIS, FSBP) | Không remediation dựng sẵn |
 | **Amazon Detective** | Điều tra finding | Không chặn traffic |
 
-📌 Đề mô tả Inspector với "rules packages, Findings report / Full report" là **Inspector Classic**, đã **tắt hoàn toàn từ 20/05/2026**. Inspector hiện hành quét liên tục, xuất finding report; ý "dùng Inspector để chứng minh không còn lỗ hổng" vẫn đúng.
+📌 Inspector quét liên tục EC2, ECR, Lambda và xuất finding report; dùng để chứng minh không còn lỗ hổng.
 
 🎯 **Quét CIS Benchmark cho toàn Organization** → chỉ định **Security Hub administrator account**, **tự động bật cho account mới**, bật standard **CIS AWS Foundations Benchmark**. 📌 Phần standards/controls nay mang tên **Security Hub CSPM**. 🧭 Compliance scanning → Security Hub · Vulnerability → Inspector · Threat → GuardDuty.
 
@@ -1280,7 +1280,7 @@
 | Carrier Gateway | IPv4 | — | Chỉ cho subnet trong Wavelength Zone |
 | Transit Gateway | — | — | Hub nhiều VPC + on-prem; tự nó không tạo đường low-latency tới data center |
 
-🎯 **NAT Gateway:** gắn 1 EIP, hỗ trợ TCP/UDP/ICMP, **không gắn Security Group** (dùng NACL), tối đa **55,000 kết nối đồng thời tới mỗi đích duy nhất trên mỗi IP**. 📌 Đề ghi "5 Gbps tự scale tới 45 Gbps": nay **5 → 100 Gbps**. 📌 Đề ghi "phải đặt ở public subnet": đúng với NAT **zonal**; nay có **Regional NAT gateway** (không cần public subnet, tự trải đa AZ, tới 32 IP/AZ).
+🎯 **NAT Gateway:** gắn 1 EIP, hỗ trợ TCP/UDP/ICMP, **không gắn Security Group** (dùng NACL), tối đa **55,000 kết nối đồng thời tới mỗi đích duy nhất trên mỗi IP**. Băng thông **5 → 100 Gbps**. NAT **zonal** đặt ở public subnet; 📌 **Regional NAT gateway** (không cần public subnet, tự trải đa AZ, tới 32 IP/AZ).
 
 🎯 **Hàng trăm EC2 ở 3 AZ gọi API bên thứ ba, đối tác cần danh sách IP tĩnh** → **NAT Gateway mỗi AZ** làm default route của private subnet → chỉ cần **3 Elastic IP**. ⚠️ 1 EIP chỉ gắn 1 instance; NLB dành cho inbound.
 
@@ -1302,11 +1302,11 @@
 
 🎯 **Private subnet không patch được bằng SSM** → **NAT Gateway ở public subnet + route `0.0.0.0/0` trong route table của private subnet** (an toàn hơn: interface endpoint cho SSM).
 
-🎯 **Địa chỉ IP của EC2:** public IPv4 lấy từ pool của Amazon, **không tự gán/gỡ được**; **mất khi stop, hibernate, terminate** (start lại nhận IP mới). Gán EIP → public IP cũ bị thu hồi; không tồn tại song song. Instance không nhận public IP mới nếu có nhiều ENI hoặc secondary private IP đang gắn EIP. Default VPC cấp public IP mặc định; VPC không mặc định phụ thuộc **auto-assign** của subnet (mặc định tắt). EC2 và VPC **luôn dùng IPv4**. IPv6 là public toàn cầu, **không gán EIP**, không tự ra Internet (cần egress-only IGW).
+🎯 **Địa chỉ IP của EC2:** public IPv4 lấy từ pool của Amazon, **không tự gán/gỡ được**; **mất khi stop, hibernate, terminate** (start lại nhận IP mới). Gán EIP → public IP đang có bị thu hồi; không tồn tại song song. Instance không nhận public IP mới nếu có nhiều ENI hoặc secondary private IP đang gắn EIP. Default VPC cấp public IP mặc định; VPC không mặc định phụ thuộc **auto-assign** của subnet (mặc định tắt). EC2 và VPC **luôn dùng IPv4**. IPv6 là public toàn cầu, **không gán EIP**, không tự ra Internet (cần egress-only IGW).
 
 🎯 **ENI** attach vào **instance** (không "attach vào subnet"). **Elastic IP** là cách giữ dịch vụ không gián đoạn khi migrate instance.
 
-📌 Đề ghi "1 EIP gắn instance đang chạy là miễn phí": từ **02/2024 AWS tính phí mọi public IPv4**, kể cả EIP đang gắn.
+📌 Từ **02/2024 AWS tính phí mọi public IPv4**, kể cả EIP đang gắn instance chạy.
 
 ---
 
@@ -1335,7 +1335,7 @@
 
 🎯 **Website qua ELB, đã mở inbound 80 mà không vào được** → thêm **NACL outbound 1024–65535**. SG không cần (stateful).
 
-🎯 **Thêm subnet web thứ 3 vào ASG, một số user mất kết nối DB** (DB subnet dùng custom NACL chỉ allow 2 subnet cũ) → NACL của **DB subnet** thêm **inbound 3306 từ subnet mới** + **outbound ephemeral tới subnet mới**. ⚠️ Outbound 3306 là sai chiều port.
+🎯 **Thêm subnet web thứ 3 vào ASG, một số user mất kết nối DB** (DB subnet dùng custom NACL chỉ allow 2 subnet ban đầu) → NACL của **DB subnet** thêm **inbound 3306 từ subnet mới** + **outbound ephemeral tới subnet mới**. ⚠️ Outbound 3306 là sai chiều port.
 
 🎯 **EC2 private subnet `curl` fail** (route NAT đúng) → kiểm tra **outbound SG** đúng port (`http` = 80, `https` = 443) tới `0.0.0.0/0`. Không cần inbound (stateful).
 
@@ -1401,7 +1401,7 @@
 
 | Origin | Bảo vệ | HTTPS CloudFront → origin |
 | --- | --- | --- |
-| S3 REST endpoint | **OAC** (đề cũ: OAI) + bucket policy | Theo protocol viewer dùng |
+| S3 REST endpoint | **OAC** + bucket policy | Theo protocol viewer dùng |
 | **S3 website endpoint** | Là **custom origin** → **không dùng OAI/OAC**, dùng **custom header** | **Không dùng được HTTPS** (website endpoint không hỗ trợ HTTPS) |
 
 📌 **OAI** là cơ chế legacy → AWS khuyên **OAC** (hỗ trợ SSE-KMS, mọi Region). 📌 CloudFront nay có **VPC origins** (ALB/NLB/EC2 trong private subnet). ⚠️ SG và NACL không dùng được với CloudFront.
@@ -1515,7 +1515,7 @@
 | --- | --- | --- |
 | **S3 Storage Lens** | Dashboard usage/activity | Danh sách object (→ Inventory), xóa MPU dở (→ lifecycle) |
 | **S3 Select** | SQL lấy một phần một object (📌 không nhận khách mới) | Audit trạng thái object |
-| **S3 Object Lambda** | Biến đổi dữ liệu khi đọc (📌 chỉ khách cũ) | Access control |
+| **S3 Object Lambda** | Biến đổi dữ liệu khi đọc (📌 không nhận khách mới) | Access control |
 | **S3 RTC** | SLA replication 15 phút + event | Sửa Access Denied replication |
 | **Transfer Acceleration** | Upload xa qua edge | Client cùng Region |
 | **Glacier / Deep Archive** | Archive giờ–ngày | "Recover rapidly" |
@@ -1568,7 +1568,6 @@
 
 🎯 **Cẩn thận đáp án thay đổi kiến trúc** (đổi engine DB, đổi sang DynamoDB, thêm cluster mới) khi đề yêu cầu "ít thay đổi ứng dụng nhất".
 
-🎯 **Đề cũ vs hiện tại:** gặp tên cũ (PHD, OAI, Vault Lock, Snowball, DRT, Launch Configuration, Inspector Classic) thì chọn theo logic đề, nhưng biết thực tế đã đổi (📌 trong từng mục).
 
 ---
 
@@ -1635,7 +1634,7 @@
 | "app treo CPU 100%, cần tự restart" | CloudWatch Alarm (detailed monitoring) → EC2 reboot action |
 | "instance dev để quên, tự stop tiết kiệm" | Alarm CPU < 5% kéo dài → stop action |
 | "predictable / consistent daily traffic spike" | Scheduled Scaling |
-| "resource nào **của tôi** bị ảnh hưởng bởi sự cố AWS" | AWS Health Dashboard (account health; tên cũ Personal Health Dashboard) |
+| "resource nào **của tôi** bị ảnh hưởng bởi sự cố AWS" | AWS Health Dashboard (account health) |
 | "Health events của member account không về payer" | AWS Health Organizational View |
 | "metric OS-level của RDS (memory, process, swap)" | RDS Enhanced Monitoring |
 | "theo dõi p90/percentile của field trong log" | Metric Filter → CloudWatch metric |
@@ -1713,8 +1712,8 @@
 | "lấy IP thật của client sau LB" | `X-Forwarded-For` |
 | "hàng triệu request/giây, latency thấp" | Network Load Balancer |
 | "`SpilloverCount > 0`" | Scale theo `SurgeQueueLength` |
-| "trình duyệt cũ lỗi SSL với ALB" | Đổi Security Policy của ALB |
-| "ép HTTPS không phá user cũ" | Listener 80 redirect → 443 |
+| "client TLS thấp lỗi SSL với ALB" | Đổi Security Policy của ALB |
+| "ép HTTPS không phá user đang dùng http" | Listener 80 redirect → 443 |
 | "chỉ cho EC2 nhận traffic từ LB" | SG EC2 tham chiếu SG của LB |
 | "chỉ phục vụ user Úc" | Route 53 Geolocation |
 | "trỏ domain của tôi sang domain bên thứ ba" | CNAME |
@@ -1751,7 +1750,7 @@
 | "RTO = RPO = 15 phút, rẻ nhất" | Aurora Global Database + ASG min=max=desired=1 |
 | "chia sẻ file cho khách / truy cập tạm" | S3 Pre-signed URL |
 | "chỉ subscriber xem nội dung CloudFront" | Signed URL / Signed Cookie |
-| "WORM, immutable, chứng minh compliance" | S3 Object Lock Compliance (đề cũ: Glacier Vault Lock) |
+| "WORM, immutable, chứng minh compliance" | S3 Object Lock Compliance |
 | "chặn xóa object 3 tháng, kể cả root" | Object Lock Compliance mode |
 | "xóa object bị Governance mode" | `s3:BypassGovernanceRetention` + header bypass |
 | "ép mọi object upload phải mã hóa" | S3 Default Encryption |
@@ -1844,7 +1843,7 @@
 | ASG phình khi suspend Terminate + AZRebalance | Tới 10% trên max |
 | WaitCondition timeout tối đa | 43,200 giây (12 giờ) |
 | KMS key deletion waiting period | 7–30 ngày, mặc định 30 |
-| Secrets Manager recovery window | 7–30 ngày, **mặc định 30** (📌 đề ghi 7) |
+| Secrets Manager recovery window | 7–30 ngày, **mặc định 30** |
 | KMS rotation | AWS managed: hằng năm; customer managed: mặc định 365 ngày, chỉnh được |
 | ACM Approaching Expiration event | Từ 45 ngày (private/imported), 30 ngày (public) |
 | S3 request rate mỗi prefix | 3,500 PUT/COPY/POST/DELETE · 5,500 GET/HEAD /giây |
@@ -1853,11 +1852,11 @@
 | Glacier Flexible Retrieval | Expedited 1–5 phút · Standard 3–5 giờ · Bulk 5–12 giờ |
 | Glacier Deep Archive | 12–48 giờ |
 | gp2 | 3 IOPS/GiB, 100–16,000 IOPS |
-| gp3 | Baseline 3,000 IOPS + 125 MiB/s; tối đa 80,000 IOPS (📌 đề ghi 16,000) |
+| gp3 | Baseline 3,000 IOPS + 125 MiB/s; tối đa 80,000 IOPS |
 | io1 | Tối đa 50 IOPS/GiB |
 | EBS Multi-Attach | io1/io2, 16 instance Nitro, 1 AZ |
 | Subnet reserved IP | 5 mỗi subnet; `/27` = 27, `/26` = 59 |
-| NAT Gateway | 5 → 100 Gbps (📌 đề ghi 45); 55,000 kết nối/đích/IP |
+| NAT Gateway | 5 → 100 Gbps; 55,000 kết nối/đích/IP |
 | Ephemeral port ELB/NAT/Lambda | 1024–65535 |
 | Ephemeral port Linux | 32768–61000 |
 | Ephemeral port Windows 2008+ | 49152–65535 |
