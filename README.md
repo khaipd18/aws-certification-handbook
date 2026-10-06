@@ -13,7 +13,7 @@ Sổ tay ôn thi chứng chỉ AWS bằng tiếng Việt (giữ nguyên thuật 
 | [CLF-C02](CLF-C02/) | AWS Certified Cloud Practitioner | Foundational | 19 chương | [practice-exam-notes](CLF-C02/02-practice-exams/practice-exam-notes.md) | ✅ Hoàn thành |
 | [AIF-C01](AIF-C01/) | AWS Certified AI Practitioner | Foundational | 10 chương | [practice-exam-notes](AIF-C01/02-practice-exams/practice-exam-notes.md) | ✅ Hoàn thành |
 | [SAA-C03](SAA-C03/) | AWS Certified Solutions Architect – Associate | Associate | 25 chương | [practice-exam-notes](SAA-C03/02-practice-exams/practice-exam-notes.md) | ✅ Hoàn thành |
-| [SOA-C03](SOA-C03/) | AWS Certified CloudOps Engineer – Associate | Associate | — | — | 🚧 Đang chuẩn bị |
+| [SOA-C03](SOA-C03/) | AWS Certified CloudOps Engineer – Associate | Associate | — | [practice-exam-notes](SOA-C03/02-practice-exams/practice-exam-notes.md) | 🚧 Đã có sổ tay đề thi thử, chưa có ghi chú khóa học |
 
 Lộ trình gợi ý: **CLF-C02** (nền tảng) → **AIF-C01** (tùy chọn, nếu làm AI/ML) → **SAA-C03** → **SOA-C03**. Nhiều chương ở SAA và SOA dùng chung dịch vụ, nên học SAA trước sẽ đỡ cho SOA.
 
@@ -174,9 +174,11 @@ Cuối mỗi chương có mục **Nguồn đã đối chiếu**, dẫn link AWS 
 </details>
 
 <details>
-<summary><b>SOA-C03 — CloudOps Engineer Associate</b> (đang chuẩn bị)</summary>
+<summary><b>SOA-C03 — CloudOps Engineer Associate</b> (chưa có ghi chú khóa học)</summary>
 
-Chưa có nội dung. Sẽ theo cùng cấu trúc với các chứng chỉ ở trên.
+Ghi chú khóa học chưa có, sẽ theo cùng cấu trúc với các chứng chỉ ở trên.
+
+📝 [Sổ tay đề thi thử SOA-C03](SOA-C03/02-practice-exams/practice-exam-notes.md)
 
 </details>
 
