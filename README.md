@@ -79,7 +79,7 @@ Cuối mỗi chương có mục **Nguồn đã đối chiếu**, dẫn link AWS 
 | ❓ | Chưa kiểm chứng được trong docs, đề mâu thuẫn hoặc đáng ngờ | Cả hai |
 | 🎯 | Kiến thức cốt lõi | Practice exam notes |
 | ⚠️ | Dễ nhầm, bẫy đề | Practice exam notes |
-| 📌 | Cập nhật đến 10/2026 so với đáp án trong đề | Practice exam notes |
+| 📌 | Kiến thức cập nhật theo docs AWS hiện hành (10/2026) | Practice exam notes |
 
 ---
 
