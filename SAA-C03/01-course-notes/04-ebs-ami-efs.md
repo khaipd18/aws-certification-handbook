@@ -249,5 +249,5 @@
 - EBS Snapshots Archive: https://docs.aws.amazon.com/ebs/latest/userguide/snapshot-archive.html
 - Recycle Bin: https://docs.aws.amazon.com/ebs/latest/userguide/recycle-bin.html
 - Amazon EFS performance (khuyến nghị General Purpose, throughput mode): https://docs.aws.amazon.com/efs/latest/ug/performance.html
-- EFS storage classes: https://docs.aws.amazon.com/efs/latest/ug/storage-classes.html
+- EFS storage classes: https://docs.aws.amazon.com/efs/latest/ug/features.html
 - Instance store: https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/InstanceStorage.html
