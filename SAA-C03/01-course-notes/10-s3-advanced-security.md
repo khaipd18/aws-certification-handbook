@@ -11,7 +11,7 @@
 - **Event Notifications** gửi tới **SNS, SQS, Lambda**; hoặc mọi event sang **EventBridge** để lọc nâng cao và gửi tới 18+ đích.
 - Hiệu năng: mỗi **prefix** ≥ **3,500 PUT/COPY/POST/DELETE** và **5,500 GET/HEAD** mỗi giây; tăng tốc bằng **multipart upload**, **Transfer Acceleration**, **byte-range fetch**.
 - Mã hóa: **SSE-S3** (mặc định cho mọi object mới), **SSE-KMS** (audit qua CloudTrail, chịu quota KMS), **DSSE-KMS** (hai lớp), **SSE-C** (khách cung cấp key, bắt buộc HTTPS), **client-side**.
-- 📌 Từ 04/2026, bucket general purpose mới **mặc định chặn SSE-C**; muốn dùng phải bật lại bằng PutBucketEncryption.
+- ⚠️ Lỗi thời: "SSE-C dùng được ngay trên mọi bucket" → từ 04/2026 bucket general purpose mới **mặc định chặn SSE-C**; muốn dùng phải bật lại bằng PutBucketEncryption.
 - Bảo mật: ép HTTPS bằng `aws:SecureTransport`, **MFA Delete** (chỉ root, cần versioning), **pre-signed URL**, **Object Lock** (WORM: Compliance/Governance, Legal Hold), **Access Points**.
 - ⚠️ Lỗi thời: **S3 Select** và **Glacier vault (Vault Lock)** đóng với khách mới; **S3 Object Lambda** chỉ còn cho khách hiện hữu từ 07/11/2025.
 
@@ -52,7 +52,7 @@
 ### Encryption options
 - **Là gì:** **SSE-S3** (key do S3 quản lý, AES-256, header `x-amz-server-side-encryption: AES256`); **SSE-KMS** (`aws:kms`, kiểm soát key, audit CloudTrail); **DSSE-KMS** (hai lớp mã hóa phía server); **SSE-C** (gửi key trong mỗi request, chỉ HTTPS, S3 không lưu key); **client-side** (mã hóa trước khi gửi).
 - **Dùng khi nào:** compliance cần audit việc dùng key → SSE-KMS; công ty muốn tự giữ key ngoài AWS → SSE-C hoặc client-side.
-- **Vì sao quan trọng:** từ 01/2023 mọi object mới tự mã hóa SSE-S3. 📌 Từ 04/2026 bucket mới mặc định chặn SSE-C (BlockedEncryptionTypes).
+- **Vì sao quan trọng:** từ 01/2023 mọi object mới tự mã hóa SSE-S3. ⚠️ Lỗi thời: SSE-C bật sẵn → từ 04/2026 bucket mới mặc định chặn SSE-C (BlockedEncryptionTypes).
 
 ### Encryption in transit & bucket policy
 - **Là gì:** S3 có endpoint HTTP và HTTPS; ép HTTPS bằng Deny khi `aws:SecureTransport` là false.
