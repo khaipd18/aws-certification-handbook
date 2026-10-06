@@ -1,7 +1,7 @@
 # AWS CLF-C02 — Sổ tay cốt lõi & kiến thức dễ nhầm
 
 > Tổng hợp ý tưởng cốt lõi + kiến thức liên quan/dễ nhầm từ các đề **Practice Test #2–#6** (mỗi đề 65 câu), theo nhóm dịch vụ. Chưa có Practice Test #1.
-> **🎯 = ý tưởng cốt lõi cần khắc sâu** · **⚠️ = kiến thức liên quan / dễ nhầm trong đề** · **📌 = cập nhật 10/2026** (đề còn dùng tên/số liệu cũ) · **❓ = các đề mâu thuẫn nhau hoặc đáp án đáng ngờ**.
+> **🎯 = ý tưởng cốt lõi cần khắc sâu** · **⚠️ = kiến thức liên quan / dễ nhầm trong đề** · **📌 = cập nhật theo docs AWS hiện hành (10/2026)** · **❓ = các đề mâu thuẫn nhau hoặc đáp án đáng ngờ**.
 > Xem **§30 (Phụ lục)** để tra nhanh dịch vụ hay xuất hiện ở đáp án SAI và các đáp án **không tồn tại**.
 >
 > **Ôn cấp tốc trước khi thi:** §31 (Nguyên tắc làm bài) → §32 (Bảng so sánh dễ nhầm) → §33 (Từ khóa → đáp án) → §34 (Con số & đáp án bất khả thi).
@@ -10,7 +10,7 @@
 >
 > **Khi có đề mới:** chèn kiến thức vào đúng mục dịch vụ (§1–§29), cập nhật §30–§34. Không tạo phần riêng cho từng đề.
 >
-> **Khi thi thật:** có đáp án theo tên/gói mới thì chọn cái mới; nếu chỉ có tên cũ thì chọn tên cũ đúng chức năng.
+> **Khi thi thật:** chọn đáp án đúng chức năng theo tên dịch vụ và gói hiện hành.
 
 ---
 
@@ -193,11 +193,11 @@
 | **Customer managed key** | Bạn kiểm soát policy/rotation, **tốn phí** |
 | **AWS owned key** | AWS dùng cho nhiều account, bạn không xem được |
 
-📌 "CMK / customer master key" là tên cũ → nay gọi chung **KMS key**. KMS nay chỉnh được **rotation period** và **rotate on-demand**.
+📌 Tên hiện hành là **KMS key**. KMS chỉnh được **rotation period** và **rotate on-demand**.
 
 🎯 **CloudHSM** = **thiết bị HSM phần cứng riêng**, compliance bắt buộc phần cứng, sinh/lưu/quản lý key chỉ bạn truy cập.
 
-📌 HSM mới (hsm2m.medium) đạt **FIPS 140-3 Level 3** (đề cũ ghi FIPS 140-2).
+📌 HSM hsm2m.medium đạt **FIPS 140-3 Level 3**.
 
 ⚠️ **ACM** = cấp/quản lý chứng chỉ TLS. **Secrets Manager** = lưu và **tự xoay vòng** secret; **không** tạo key mã hóa, **không** phát hiện PII.
 
@@ -239,7 +239,7 @@
 
 📌 **Inspector** "rules packages", "assessment templates" là mô tả của **Inspector Classic**; Inspector hiện tại quét liên tục EC2 (agent SSM hoặc agentless), ECR, Lambda.
 
-📌 **Security Hub** bản cũ nay tên **Security Hub CSPM**; Security Hub mới (GA 12/2025) là giải pháp hợp nhất.
+📌 **Security Hub CSPM** kiểm tra tư thế bảo mật và gom finding; **Security Hub** (GA 12/2025) là giải pháp hợp nhất.
 
 ⚠️ **Penetration testing:** tự kiểm thử hạ tầng của mình **không cần xin phép** (với các dịch vụ được phép); **network stress test** là khái niệm khác.
 
@@ -312,7 +312,7 @@
 
 ⚠️ RI **không có** kỳ hạn 6 tháng, 2 năm, 5 năm. CloudFront, S3, IAM **không có** RI.
 
-📌 Savings Plans nay có **4 loại**: **Compute** (tới 66%), **EC2 Instance** (tới 72%), **SageMaker AI** (tới 64%), **Database** (tới 35%). Docs ghi RI/EC2 Instance SP **tới 72%** (đề cũ ghi RI 75%, Convertible 54% — con số % thay đổi theo thời gian, CLF thường chỉ hỏi "RI rẻ hơn On-Demand, Spot rẻ nhất").
+📌 Savings Plans nay có **4 loại**: **Compute** (tới 66%), **EC2 Instance** (tới 72%), **SageMaker AI** (tới 64%), **Database** (tới 35%). Docs ghi RI/EC2 Instance SP **tới 72%**; CLF thường chỉ hỏi "RI rẻ hơn On-Demand, Spot rẻ nhất".
 
 ❓ **Scheduled Reserved Instances**: một đề gợi ý dùng cho job định kỳ, đề khác nói AWS không còn hỗ trợ. Thực tế **không còn mua được** → job định kỳ không được gián đoạn → On-Demand/Savings Plans; chịu gián đoạn → Spot.
 
@@ -338,7 +338,7 @@
 
 🎯 **Lambda:** chạy code không quản server, trả theo **request + thời gian chạy** (không theo ngôn ngữ, số dòng code, kích thước package); event-driven (S3 upload, DynamoDB update), tiền xử lý dữ liệu trước khi lưu S3. **Không** truy cập OS, **không** cài DB.
 
-📌 Lambda tính thời gian theo **1 ms** (đề cũ ghi "làm tròn lên 100 ms").
+📌 Lambda tính thời gian theo **1 ms**.
 
 ❓ **Lambda và container:** đề nói "Lambda không chạy container", đề khác nói Lambda deploy được **container image tới 10 GB**. Thực tế Lambda **chạy được container image** nhưng **không điều phối/quản lý container**. Câu "chạy ứng dụng container" → chọn **ECS/EKS/Fargate**.
 
@@ -414,8 +414,6 @@
 
 🎯 **Elastic Disaster Recovery (DRS)** = DR replicate liên tục.
 
-📌 "CloudEndure Disaster Recovery" là tên cũ của **AWS Elastic Disaster Recovery**.
-
 ---
 
 ## 18. Database
@@ -432,7 +430,7 @@
 | **Knowledge graph**, quan hệ phức tạp | **Neptune** |
 | Document, MongoDB | **DocumentDB** (Neptune và DocumentDB đều là **NoSQL**) |
 
-📌 Aurora docs mới ghi tới **256 TiB** (đề cũ ghi 128 TB; giới hạn thực tế tùy engine version). ElastiCache nay hỗ trợ **Valkey, Redis OSS, Memcached**.
+📌 Aurora tới **256 TiB** (giới hạn thực tế tùy engine version). ElastiCache nay hỗ trợ **Valkey, Redis OSS, Memcached**.
 
 🎯 **RDS Read Replica** = scale đọc (horizontal). **Multi-AZ một standby** = HA, **không** phục vụ đọc. Multi-AZ **hai readable standby** (DB cluster) thì đọc được. **Cross-Region** read replica → DR.
 
@@ -485,7 +483,7 @@
 | On-prem ↔ AWS **mã hóa, dựng nhanh**, qua Internet | **Site-to-Site VPN** = **Customer Gateway** (phía công ty) + **Virtual Private Gateway** (phía AWS) |
 | Máy cá nhân vào VPC | **Client VPN** |
 
-📌 Mọi **public IPv4** (kể cả Elastic IP đang gắn vào instance chạy) bị **tính phí từ 02/2024** (Free Tier có 750 giờ/tháng cho EC2) — đề cũ nói EIP "miễn phí khi gắn instance đang chạy".
+📌 Mọi **public IPv4** (kể cả Elastic IP đang gắn vào instance chạy) bị **tính phí từ 02/2024** (Free Tier có 750 giờ/tháng cho EC2).
 
 ---
 
@@ -543,7 +541,7 @@
 
 🎯 **EC2 Image Builder** = tự động tạo, cập nhật image cho EC2 và on-prem. **Resource Groups** = tổ chức và tự động hóa tác vụ trên nhiều tài nguyên theo tag.
 
-⚠️ Triển khai nhanh công nghệ phổ biến theo best practice → **AWS Solutions Library** (Quick Starts cũ). ❓ Tên "Partner Solutions" trong đề chưa kiểm chứng được qua docs.
+⚠️ Triển khai nhanh công nghệ phổ biến theo best practice → **AWS Solutions Library**. ❓ Tên "Partner Solutions" trong đề chưa kiểm chứng được qua docs.
 
 ---
 
@@ -572,9 +570,9 @@
 | **IoT Core** | Kết nối thiết bị IoT không quản server ("IoT Gateway" không tồn tại) |
 | **Connect** | Contact center |
 | **WorkSpaces** | Desktop ảo (DaaS) |
-| **AppStream 2.0** | Stream ứng dụng desktop qua trình duyệt (📌 docs đổi tên **WorkSpaces Applications**; exam guide vẫn ghi AppStream 2.0) |
+| **WorkSpaces Applications** | Stream ứng dụng desktop qua trình duyệt |
 | **Device Farm** | Test app trên thiết bị thật (out-of-scope) |
-| **Fault Injection Service (FIS)** | Chaos engineering (📌 tên cũ "Fault Injection Simulator") |
+| **Fault Injection Service (FIS)** | Chaos engineering |
 | **Elastic Transcoder** | Chuyển định dạng media trong S3 (📌 ngừng hẳn 13/11/2025, nguồn web → **MediaConvert**) |
 | **Pinpoint** | Marketing engagement (📌 hết hỗ trợ 30/10/2026 → Connect, End User Messaging) |
 | **Marketplace** | Mua AMI/SaaS bên thứ ba, bán SaaS; **không** mua RI hay Direct Connect |
@@ -613,9 +611,9 @@
 | **Compute Optimizer** | Rightsizing bằng ML: **EC2, Auto Scaling group, EBS, Lambda** (không S3, EFS) |
 | **Cost allocation tags** | Phân bổ chi phí theo phòng ban/dự án; mỗi key một value; **phải activate** cả tag AWS-generated lẫn user-defined |
 
-📌 Cost Explorer dự báo **tới 18 tháng** (đề cũ: 12 tháng); lịch sử mặc định 13 tháng. **CUR** nên dùng **CUR 2.0 qua Data Exports**.
+📌 Cost Explorer dự báo **tới 18 tháng**; lịch sử mặc định 13 tháng. **CUR** nên dùng **CUR 2.0 qua Data Exports**.
 
-❓ **So sánh chi phí on-prem với AWS (TCO):** đề chọn **Pricing Calculator**. TCO Calculator cũ đã bị bỏ; Pricing Calculator ước tính chi phí **trên AWS**. Business case đầy đủ on-prem vs AWS → **Migration Evaluator**. Không có Migration Evaluator trong đáp án thì chọn Pricing Calculator.
+❓ **So sánh chi phí on-prem với AWS (TCO):** đề chọn **Pricing Calculator**. Pricing Calculator ước tính chi phí **trên AWS**. Business case đầy đủ on-prem vs AWS → **Migration Evaluator**. Không có Migration Evaluator trong đáp án thì chọn Pricing Calculator.
 
 🎯 **Tình huống hay ra:** tìm EC2 dùng thấp không cần cấu hình → **Trusted Advisor + Cost Explorer (rightsizing)**; báo cáo chi phí theo giờ vào S3 → **CUR**; cảnh báo RI utilization thấp → **Budgets**; chọn Savings Plan tối ưu → **Cost Explorer**; billing alarm → **CloudWatch**.
 
@@ -625,7 +623,7 @@
 
 🎯 **Category:** Cost optimization, Performance, Security, Fault tolerance, Service limits, **Operational Excellence**. "Elasticity, Documentation, Change Management" **không** phải category.
 
-📌 Trusted Advisor nay có **6 category** (đề cũ ghi 5). Gói **Basic** chỉ có check **Service Limits** + một số check **Security, Fault Tolerance** (đề cũ ghi "7 core checks").
+📌 Trusted Advisor có **6 category**. Gói **Basic** chỉ có check **Service Limits** + một số check **Security, Fault Tolerance**.
 
 ⚠️ **Security check:** **S3 bucket public**, **chưa bật CloudTrail**, root chưa MFA, port mở. Không phát hiện việc chia sẻ credential, không yêu cầu tag S3.
 
@@ -1057,7 +1055,7 @@
 - Infrastructure Composer end of support (standalone console tắt 07/12/2026): https://docs.aws.amazon.com/infrastructure-composer/latest/dg/infrastructure-composer-end-of-support.html
 - WAF resources: https://docs.aws.amazon.com/waf/latest/developerguide/how-aws-waf-works-resources.html
 - KMS automatic key rotation: https://docs.aws.amazon.com/kms/latest/developerguide/rotating-keys-enable.html
-- CloudWatch Logs agent cũ deprecated: https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/UsePreviousCloudWatchLogsAgent.html
+- CloudWatch Logs agent deprecated, dùng Unified CloudWatch Agent: https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/UsePreviousCloudWatchLogsAgent.html
 - Elastic Transcoder end of support (nguồn web): https://aws.amazon.com/blogs/media/support-for-amazon-elastic-transcoder-ending-soon/
 - CodeStar discontinuation (nguồn web): https://repost.aws/questions/QUzfvPNaF6T3CVMRta-qcziA/code-star-vs-code-catalyst
 - CLF-C02 in-scope / out-of-scope services: https://docs.aws.amazon.com/aws-certification/latest/cloud-practitioner-02/clf-02-in-scope-services.html · https://docs.aws.amazon.com/aws-certification/latest/cloud-practitioner-02/clf-02-out-of-scope-services.html
