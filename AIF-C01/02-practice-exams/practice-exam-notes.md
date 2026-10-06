@@ -1,7 +1,7 @@
 # AWS AIF-C01 — Sổ tay cốt lõi & kiến thức dễ nhầm
 
 > Tổng hợp ý tưởng cốt lõi + kiến thức liên quan/dễ nhầm từ **7 đề** (bộ "Practice Test #1–#4 Full-Exam" và Cloud Exam Pro "Practice Test 01–03"), theo nhóm chủ đề và dịch vụ.
-> **🎯 = ý tưởng cốt lõi cần khắc sâu** · **⚠️ = kiến thức liên quan / dễ nhầm trong đề** · **📌 = cập nhật 10/2026** (đề còn dùng tên/đáp án cũ) · **❓ = các đề mâu thuẫn nhau hoặc đáp án đáng ngờ**.
+> **🎯 = ý tưởng cốt lõi cần khắc sâu** · **⚠️ = kiến thức liên quan / dễ nhầm trong đề** · **📌 = cập nhật theo docs AWS hiện hành (10/2026)** · **❓ = các đề mâu thuẫn nhau hoặc đáp án đáng ngờ**.
 > Xem **§30 (Phụ lục)** để tra nhanh dịch vụ/đáp án hay xuất hiện ở đáp án SAI.
 >
 > **Ôn cấp tốc trước khi thi:** §31 (Nguyên tắc làm bài) → §32 (Bảng so sánh dễ nhầm) → §33 (Từ khóa → đáp án) → §34 (Con số & đáp án bất khả thi).
@@ -10,7 +10,7 @@
 >
 > **Khi có đề mới:** chèn kiến thức vào đúng mục (§1–§29), cập nhật §30–§34. Không tạo phần riêng cho từng đề.
 >
-> **Khi thi thật:** có đáp án theo tên/tính năng mới thì chọn cái mới; nếu chỉ có tên cũ thì chọn tên cũ đúng chức năng.
+> **Khi thi thật:** chọn đáp án đúng chức năng theo tên dịch vụ và tính năng hiện hành.
 
 ---
 
@@ -44,7 +44,7 @@
 | **Self-supervised** | Không nhãn, model tự tạo nhãn | **Pre-training FM / LLM** (GPT, BERT) |
 | **Reinforcement learning** | Agent + environment + reward | Robot, game, tối ưu hệ thống; chatbot học từ phản hồi tích cực |
 | **Transfer learning** | Model task A → task B liên quan | Dùng lại kiến thức giữa các model của nhiều phòng ban |
-| **Incremental training** | Model cũ + dữ liệu mới, không quên kiến thức cũ | Cập nhật model với data mới |
+| **Incremental training** | Model hiện có + dữ liệu mới, không quên kiến thức đã học | Cập nhật model với data mới |
 | **Federated learning** | Data phân tán, **không gom về một chỗ** | Privacy, compliance khi huấn luyện |
 | **Active learning** | Model chủ động xin người gắn thêm nhãn | Loại trừ khi đề nói "sẽ không gắn nhãn thêm" |
 
@@ -287,7 +287,7 @@
 
 🎯 **Vector DB cho RAG:** **OpenSearch Service** (kNN, full-text, similarity), **Aurora PostgreSQL** (pgvector), Neptune Analytics, S3 Vectors, RDS for PostgreSQL. **Không** phải vector DB trong đề: DynamoDB, Redshift, Athena, EMR (DocumentDB cũng bị coi là sai).
 
-📌 Đề cũ coi **OpenSearch Serverless** là vector store "mặc định". Quick create nay có 4 lựa chọn: **OpenSearch Serverless, Aurora PostgreSQL Serverless, Neptune Analytics, S3 Vectors**; AWS khuyên dùng **Bedrock Managed Knowledge Base** (datastore do Bedrock quản lý). Đề cũ vẫn đáp OpenSearch Serverless.
+📌 Vector store khi quick create Knowledge Base: **OpenSearch Serverless, Aurora PostgreSQL Serverless, Neptune Analytics, S3 Vectors**; AWS khuyên dùng **Bedrock Managed Knowledge Base** (datastore do Bedrock quản lý).
 
 📌 **Amazon Kendra** (enterprise search) không nhận khách mới từ 30/07/2026 → **Bedrock Managed Knowledge Base**.
 
@@ -318,7 +318,7 @@
 
 🎯 **RLHF**: con người **xếp hạng / so sánh** các response → train **reward model** → fine-tune bằng RL. Khác **human evaluation job** (chỉ chấm điểm, **không đổi model**).
 
-📌 Đề cũ nói "Bedrock không làm được RLHF". Bedrock nay có **Reinforcement fine-tuning** (reward function bằng Lambda hoặc judge model); RLHF "đúng nghĩa" (reward model học từ xếp hạng người) vẫn không phải tính năng có sẵn.
+📌 Bedrock có **Reinforcement fine-tuning** (reward function bằng Lambda hoặc judge model); RLHF "đúng nghĩa" (reward model học từ xếp hạng người) vẫn không phải tính năng có sẵn.
 
 🎯 **Chuẩn bị data fine-tune:** loại trùng lặp, loại record không liên quan, sửa nhãn không nhất quán theo guideline rõ ràng (data nhỏ chất lượng > data lớn nhiễu; tăng epochs không sửa được lỗi data). Model kém ở dòng sản phẩm mới → thêm **dữ liệu có nhãn đại diện cho mọi dòng sản phẩm** rồi fine-tune lại.
 
@@ -363,9 +363,9 @@
 | **Provisioned Throughput** | Mua capacity theo giờ (cam kết 1 hoặc 6 tháng rẻ hơn); lưu lượng **ổn định, cao**. Dùng cho 1 lần gọi/ngày là lãng phí |
 | **Batch inference** | Rẻ hơn tới **50%** on-demand, chấp nhận trễ |
 
-📌 Ngoài 3 mô hình trên còn có **service tiers** (Standard/Priority/Flex/Reserved) — đề cũ nói "Bedrock chỉ có on-demand và batch" là thiếu.
+📌 Ngoài 3 mô hình trên còn có **service tiers** (Standard/Priority/Flex/Reserved).
 
-❓ **Custom model trên Bedrock:** một đề nói **bắt buộc** mua Provisioned Throughput; đề khác nói chạy được on-demand. Hiện tại chạy được **cả hai** (custom model deployment on-demand). Nếu lựa chọn chỉ có PT thì chọn PT.
+📌 **Custom model trên Bedrock** chạy được **on-demand** (custom model deployment) hoặc **Provisioned Throughput**.
 
 🎯 Chi phí chính = **số token input + output**. Giảm chi phí: rút ngắn prompt, ít few-shot hơn, giới hạn **max output tokens**, yêu cầu trả lời ngắn gọn, **prompt caching** cho phần system prompt lặp lại. **Model nhỏ rẻ hơn** model lớn.
 
@@ -414,7 +414,7 @@
 | **Amazon Q data integration in AWS Glue** | Sinh/sửa script ETL Glue bằng ngôn ngữ tự nhiên |
 | **PartyRock** | Playground GenAI không code, không cần AWS account |
 
-📌 **Amazon Q Business, Q Apps** không nhận khách mới → **Amazon Quick** (Apps in Quick). **Amazon Q in QuickSight** → QuickSight nay là **Amazon Quick Sight**. **CodeWhisperer** → Q Developer → nay khuyến nghị **Kiro** (Q Developer IDE plugins hết hỗ trợ 30/04/2027). **AWS Chatbot** đổi tên **Amazon Q Developer in chat applications**.
+📌 Trợ lý AI doanh nghiệp, app không code → **Amazon Quick** (Amazon Q Business, Q Apps không nhận khách mới). BI có AI → **Amazon Quick Sight**. Trợ lý lập trình → **Kiro** (Q Developer IDE plugins hết hỗ trợ 30/04/2027). ChatOps trong Slack/Teams → **Amazon Q Developer in chat applications**.
 
 ---
 
@@ -542,7 +542,7 @@
 | **Automated Reasoning checks** | Kiểm tra response theo **luật logic** rút từ tài liệu chính sách, giải thích luật nào đúng/sai (bằng chứng audit), **detect mode** |
 | **Prompt attack filter + input tags** | Jailbreak, prompt injection, prompt leakage; tag phần user input để không chặn nhầm system prompt |
 
-📌 Đề cũ ghi content filter có **4** nhóm (Hate/Insults/Sexual/Violence). Hiện có **6**: thêm **Misconduct**, **Prompt Attack**.
+📌 Content filter có **6** nhóm: **Hate, Insults, Sexual, Violence, Misconduct, Prompt Attack**.
 
 🎯 Guardrails + **CloudWatch alarms** → lọc và **cảnh báo** khi vi phạm.
 
@@ -616,7 +616,7 @@
 | **Amazon Macie** | Tìm **PII trong S3** (tự động, ít công nhất) |
 | **Amazon GuardDuty** | **Threat detection** real-time |
 
-📌 **AWS Audit Manager không nhận khách mới từ 30/04/2026** → thay bằng **AWS Config Conformance Packs**. Đề cũ vẫn đáp Audit Manager cho "continuously audit, collect evidence".
+📌 **AWS Audit Manager không nhận khách mới từ 30/04/2026** → "continuously audit, collect evidence" dùng **AWS Config Conformance Packs**.
 
 ⚠️ **PII ở đâu → dùng gì:** PII trong S3 → **Macie** · PII trong text/support ticket → **Comprehend PII redaction** · PII trong response của model → **Guardrails sensitive info filter**.
 
