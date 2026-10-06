@@ -13,7 +13,7 @@ Sổ tay ôn thi chứng chỉ AWS bằng tiếng Việt (giữ nguyên thuật 
 | [CLF-C02](CLF-C02/) | AWS Certified Cloud Practitioner | Foundational | 19 chương | [practice-exam-notes](CLF-C02/02-practice-exams/practice-exam-notes.md) | ✅ Hoàn thành |
 | [AIF-C01](AIF-C01/) | AWS Certified AI Practitioner | Foundational | 10 chương | [practice-exam-notes](AIF-C01/02-practice-exams/practice-exam-notes.md) | ✅ Hoàn thành |
 | [SAA-C03](SAA-C03/) | AWS Certified Solutions Architect – Associate | Associate | 25 chương | [practice-exam-notes](SAA-C03/02-practice-exams/practice-exam-notes.md) | ✅ Hoàn thành |
-| [SOA-C03](SOA-C03/) | AWS Certified CloudOps Engineer – Associate | Associate | — | [practice-exam-notes](SOA-C03/02-practice-exams/practice-exam-notes.md) | 🚧 Đã có sổ tay đề thi thử, chưa có ghi chú khóa học |
+| [SOA-C03](SOA-C03/) | AWS Certified CloudOps Engineer – Associate | Associate | 17 chương | [practice-exam-notes](SOA-C03/02-practice-exams/practice-exam-notes.md) | ✅ Hoàn thành |
 
 Lộ trình gợi ý: **CLF-C02** (nền tảng) → **AIF-C01** (tùy chọn, nếu làm AI/ML) → **SAA-C03** → **SOA-C03**. Nhiều chương ở SAA và SOA dùng chung dịch vụ, nên học SAA trước sẽ đỡ cho SOA.
 
@@ -174,9 +174,25 @@ Cuối mỗi chương có mục **Nguồn đã đối chiếu**, dẫn link AWS 
 </details>
 
 <details>
-<summary><b>SOA-C03 — CloudOps Engineer Associate</b> (chưa có ghi chú khóa học)</summary>
+<summary><b>SOA-C03 — CloudOps Engineer Associate</b> (17 chương)</summary>
 
-Ghi chú khóa học chưa có, sẽ theo cùng cấu trúc với các chứng chỉ ở trên.
+1. [Amazon EC2 for CloudOps](SOA-C03/01-course-notes/01-ec2.md)
+2. [Amazon Machine Image (AMI)](SOA-C03/01-course-notes/02-ami.md)
+3. [AWS Systems Manager](SOA-C03/01-course-notes/03-systems-manager.md)
+4. [High Availability & Scalability: ELB & ASG](SOA-C03/01-course-notes/04-elb-asg.md)
+5. [AWS CloudFormation](SOA-C03/01-course-notes/05-cloudformation.md)
+6. [AWS Lambda](SOA-C03/01-course-notes/06-lambda.md)
+7. [EC2 Storage: EBS, Instance Store & EFS](SOA-C03/01-course-notes/07-ebs-efs.md)
+8. [Amazon FSx & AWS Storage Gateway](SOA-C03/01-course-notes/08-fsx-storage-gateway.md)
+9. [CloudFront & AWS Global Accelerator](SOA-C03/01-course-notes/09-cloudfront-global-accelerator.md)
+10. [Databases: RDS, Aurora, RDS Proxy & ElastiCache](SOA-C03/01-course-notes/10-databases.md)
+11. [Monitoring & Audit: CloudWatch, CloudTrail, Config](SOA-C03/01-course-notes/11-monitoring-audit.md)
+12. [Account Management: Health, Organizations & Billing](SOA-C03/01-course-notes/12-account-management.md)
+13. [Disaster Recovery: DataSync, AWS Backup & DR Strategies](SOA-C03/01-course-notes/13-disaster-recovery.md)
+14. [Security & Compliance: WAF, Shield, GuardDuty, KMS, ACM, Secrets Manager](SOA-C03/01-course-notes/14-security-compliance.md)
+15. [Identity: IAM Advanced, Federation & STS](SOA-C03/01-course-notes/15-identity.md)
+16. [Amazon Route 53](SOA-C03/01-course-notes/16-route53.md)
+17. [Amazon VPC](SOA-C03/01-course-notes/17-vpc.md)
 
 📝 [Sổ tay đề thi thử SOA-C03](SOA-C03/02-practice-exams/practice-exam-notes.md)
 
