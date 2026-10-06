@@ -1,7 +1,7 @@
 # AWS SAA — Sổ tay cốt lõi & kiến thức dễ nhầm
 
 > Tổng hợp toàn bộ ý tưởng cốt lõi + kiến thức liên quan/dễ nhầm, theo nhóm dịch vụ.
-> **🎯 = ý tưởng cốt lõi cần khắc sâu** · **⚠️ = kiến thức liên quan / dễ nhầm trong đề** · **📌 = cập nhật 10/2026** (đề luyện còn dùng tên/số liệu cũ: khi thi cứ chọn theo logic đề, nhưng biết thực tế đã đổi).
+> **🎯 = ý tưởng cốt lõi cần khắc sâu** · **⚠️ = kiến thức liên quan / dễ nhầm trong đề** · **📌 = cập nhật theo docs AWS hiện hành (10/2026)**.
 > Xem **mục 42 (Phụ lục)** để tra nhanh các dịch vụ hay xuất hiện ở đáp án SAI (distractor) và lý do sai.
 >
 > **Ôn cấp tốc trước khi thi:** §45 (Nguyên tắc chung) → §46 (Bảng so sánh dễ nhầm) → §47 (Từ khóa → đáp án) → §48 (Con số & kết hợp bất khả thi).
@@ -85,7 +85,7 @@
 
 ⚠️ **Giữ log trước khi ASG terminate instance** (debug về sau) → cài agent đẩy log lên **CloudWatch Logs** liên tục (không mất khi instance chết). Snapshot/SSH/Lambda copy = tốn công, không elastic.
 
-📌 Agent "CloudWatch Logs" cũ (`awslogs`) đã **deprecated** → nay dùng **unified CloudWatch agent** (gom cả log lẫn metric). Đáp án ghi "CloudWatch Logs agent" vẫn hiểu là ý đúng.
+📌 Thu thập log và metric từ EC2/on-prem → **unified CloudWatch agent** (gom cả log lẫn metric).
 
 ### CloudWatch Logs vs CloudTrail Logs
 
@@ -99,7 +99,7 @@
 
 ## 5. EventBridge
 
-🎯 EventBridge = event bus: bắt sự kiện → Rule → Target. Rule 2 kiểu: **pattern nội dung** (event-driven) hoặc **lịch/cron** (scheduled). CloudWatch Events = tên cũ.
+🎯 EventBridge = event bus: bắt sự kiện → Rule → Target. Rule 2 kiểu: **pattern nội dung** (event-driven) hoặc **lịch/cron** (scheduled).
 
 🎯 **Decouple + tích hợp SaaS bên thứ ba** → **EventBridge** (dịch vụ event-based DUY NHẤT tích hợp trực tiếp SaaS partners). SNS không tích hợp SaaS; SQS/ELB không hợp.
 
@@ -160,7 +160,7 @@ DLQ = message xử lý lỗi nhiều lần → chuyển sang để điều tra.
 
 🎯 **Buffer chống mất data khi tải tăng vọt (IoT/sensor) + cần replay** → đặt **SQS** trước consumer (đệm, at-least-once, DLQ). **SNS không poll được** (push, dễ mất nếu subscriber quá tải). Firehose→S3 = trễ + cần thêm Lambda.
 
-📌 Kích thước message SQS tối đa nay là **1 MiB** (trước đây 256 KB). Lớn hơn → Extended Client Library (lưu payload ở S3).
+📌 Kích thước message SQS tối đa **1 MiB**. Lớn hơn → Extended Client Library (lưu payload ở S3).
 
 ---
 
@@ -218,7 +218,7 @@ DLQ = message xử lý lỗi nhiều lần → chuyển sang để điều tra.
 
 ### Encryption / engine upgrade / storage / in-transit / auth
 
-🎯 RDS encryption chỉ bật **lúc tạo**. Mã hóa DB cũ → snapshot → copy có encrypt → restore → xóa cũ. Multi-AZ ≠ mã hóa. Replica không mã hóa được nếu master chưa mã hóa.
+🎯 RDS encryption chỉ bật **lúc tạo**. Mã hóa DB chưa mã hóa → snapshot → copy có encrypt → restore → xóa DB gốc. Multi-AZ ≠ mã hóa. Replica không mã hóa được nếu master chưa mã hóa.
 
 🎯 **Engine level upgrade** → primary+standby nâng **đồng thời** → CÓ downtime (dù Multi-AZ). OS/hardware maintenance → tuần tự qua failover → downtime tối thiểu. Hết storage + ít effort → bật **Storage Auto-Scaling**.
 
@@ -286,7 +286,7 @@ DLQ = message xử lý lỗi nhiều lần → chuyển sang để điều tra.
 
 ⚠️ Multi-AZ (trong region) ≠ Multi-Region. RDS thường cũng multi-region được (cross-region read replica). Aurora đặc biệt có **Aurora Global Database** (replicate storage <1s, failover nhanh). Aurora chỉ **MySQL/PostgreSQL**. Aurora Serverless v2 = tải biến động/thưa (không tối ưu cho read-heavy ổn định cao).
 
-📌 Aurora Global Database nay hỗ trợ **tối đa 10 secondary Region** (tài liệu luyện cũ ghi 5). Tổng reader của primary cluster + số secondary cluster ≤ 15.
+📌 Aurora Global Database hỗ trợ **tối đa 10 secondary Region**. Tổng reader của primary cluster + số secondary cluster ≤ 15.
 
 ---
 
@@ -339,7 +339,7 @@ DLQ = message xử lý lỗi nhiều lần → chuyển sang để điều tra.
 
 ⚠️ Cần thêm caching mà "không đổi code" → thường **không** chọn ElastiCache (caching cần sửa app đọc cache trước). Khi đó cân nhắc DAX (DynamoDB) hoặc API Gateway caching.
 
-📌 ElastiCache nay có 3 engine: **Valkey**, **Redis OSS**, **Memcached**. Đề ghi "Redis" = nhóm Valkey/Redis OSS.
+📌 ElastiCache có 3 engine: **Valkey**, **Redis OSS**, **Memcached**.
 
 ---
 
@@ -384,7 +384,7 @@ DLQ = message xử lý lỗi nhiều lần → chuyển sang để điều tra.
 
 ⚠️ **Truy cập S3 từ on-prem với low-latency + local cache** → **S3 File Gateway** (NFS/SMB, cache local). **Mountpoint for Amazon S3** = file client Linux mount S3 trực tiếp nhưng **KHÔNG POSIX-compliant** đầy đủ → không thay được file share on-prem.
 
-📌 Mountpoint for Amazon S3 nay **đã có local cache** (đĩa instance/EBS, cả shared cache) — lý do "không cache" trong tài liệu cũ không còn đúng. Lý do loại đúng là: không POSIX đầy đủ, chạy trên Linux, không phải giải pháp NFS/SMB cho on-prem.
+📌 Mountpoint for Amazon S3 **có local cache** (đĩa instance/EBS, cả shared cache). Loại Mountpoint khi đề cần: POSIX đầy đủ, Windows, hoặc NFS/SMB cho on-prem.
 
 🎯 Upload **file rất lớn** (≥100MB, bắt buộc nếu >5GB) → **Multipart Upload** (song song, resilient, retry từng phần). Không phải Snowball (offline), không phải S3TA/Versioning.
 
@@ -410,7 +410,7 @@ DLQ = message xử lý lỗi nhiều lần → chuyển sang để điều tra.
 
 🎯 **Chỉ cần đọc phần đầu mỗi object (vd 250 byte metadata) từ nhiều file lớn** → **Byte-Range Fetch** (header `Range` trong GET, chỉ tải phần cần → nhanh, rẻ, song song được). Đọc cả file = tốn/chậm. **S3 Select** = lọc subset bằng SQL (dùng `ScanRange` để chia nhỏ), khác Byte-Range Fetch. Không import trực tiếp S3 → RDS.
 
-📌 **S3 Select** không còn mở cho khách mới (khách cũ vẫn dùng). Thay thế: Athena, hoặc lọc phía client.
+📌 **S3 Select** không nhận khách mới. Thay thế: Athena, hoặc lọc phía client.
 
 🎯 **Xem trạng thái cấu hình S3 (vd bucket nào CHƯA bật Versioning) trên nhiều Region/account, ít công sức** → **S3 Storage Lens** (advanced metrics + dashboard per-bucket, lọc versioning status toàn org). CloudTrail chỉ log thay đổi; IAM Access Analyzer/Multi-Region Access Point không xem được cấu hình bucket.
 
@@ -436,7 +436,7 @@ DLQ = message xử lý lỗi nhiều lần → chuyển sang để điều tra.
 
 🎯 **Mã hóa at-rest + tự động rotate key mỗi 12 tháng, ít overhead** → **KMS customer managed key + automatic rotation** (bật S3 default encryption dùng key này). SSE-S3 rotation không cấu hình/audit được; imported key material **không** auto-rotate; CloudHSM = overhead cao.
 
-📌 KMS automatic rotation mặc định **mỗi năm**, nay **chỉnh được rotation period** và **rotate on-demand** cho customer managed key. AWS managed key vẫn tự rotate hằng năm, không chỉnh được. Tên "CMK / customer master key" cũ nay gọi là **KMS key** (customer managed key / AWS managed key / AWS owned key).
+📌 KMS automatic rotation mặc định **mỗi năm**, **chỉnh được rotation period** và **rotate on-demand** cho customer managed key. AWS managed key tự rotate hằng năm, không chỉnh được. Ba loại **KMS key**: customer managed key / AWS managed key / AWS owned key.
 
 🎯 **Chi phí KMS request tăng cao do upload/access dày (vẫn muốn giữ SSE-KMS)** → bật **S3 Bucket Keys** (S3 tạo data key ở tầng bucket, giảm gọi KMS tới **99%**). Giữ nguyên bảo mật/audit của SSE-KMS. Chuyển sang SSE-S3 = mất kiểm soát/audit KMS (không thỏa chính sách). VPC endpoint không giảm phí KMS.
 
@@ -450,7 +450,7 @@ DLQ = message xử lý lỗi nhiều lần → chuyển sang để điều tra.
 
 🎯 Data phải **immutable + truy cập ngay** cho audit (không xóa/sửa N năm) → **S3 Object Lock — Compliance mode** (WORM, không ai override kể cả root). Data archive lâu dài rẻ + khóa xóa → **S3 Glacier Vault Lock**.
 
-📌 **Amazon Glacier dạng vault** (dịch vụ standalone 2012, có Vault Lock) **không nhận khách mới**; AWS khuyên dùng **S3 Glacier storage classes trong S3** (+ **S3 Object Lock** để khóa). Đáp án "Vault Lock" trong đề cũ hiểu là ý "archive + WORM".
+📌 Archive + WORM → **S3 Glacier storage classes trong S3** + **S3 Object Lock**. **Amazon Glacier dạng vault** (dịch vụ standalone, có Vault Lock) **không nhận khách mới**.
 
 ⚠️ **Compliance mode** = không ai override được (kể cả root). **Governance mode** = user có quyền đặc biệt CÓ THỂ override → không hợp compliance nghiêm ngặt. Lifecycle policy **không** ngăn xóa (chỉ chuyển tầng/expire).
 
@@ -464,7 +464,7 @@ DLQ = message xử lý lỗi nhiều lần → chuyển sang để điều tra.
 
 🎯 Sở hữu bucket ≠ sở hữu object. Object mặc định thuộc account **upload**. Cross-account ghi → bucket owner có thể không đọc → cross-account IAM role hoặc **Bucket owner enforced** (ACL disabled). Shared bucket nhiều bên/prefix → **S3 Access Points**.
 
-📌 Bucket mới nay **mặc định Bucket owner enforced** (ACL tắt) → bucket owner tự động sở hữu mọi object; vấn đề "owner không đọc được object do account khác upload" chủ yếu còn ở bucket cũ bật ACL.
+📌 Bucket mới nay **mặc định Bucket owner enforced** (ACL tắt) → bucket owner tự động sở hữu mọi object; vấn đề "owner không đọc được object do account khác upload" chỉ còn ở bucket bật ACL.
 
 🎯 **ListBucket** áp lên BUCKET → ARN **không** `/*`. **GetObject** áp lên OBJECT → ARN **có** `/*`. Thường viết 2 statement riêng.
 
@@ -529,7 +529,7 @@ DLQ = message xử lý lỗi nhiều lần → chuyển sang để điều tra.
 
 ⚠️ **EBS types:** gp2/gp3 (SSD, đa dụng/boot) < io1/io2 (SSD, ≤64,000 IOPS, cần IOPS cao, vd 25,000). HDD: st1 (throughput: big data/log/Kafka) / sc1 (cold, rẻ nhất). Cần IOPS cao → io1/io2. **Tối ưu cost khi io1 under-utilized + burst thưa → chuyển gp2/gp3** (rẻ hơn, gp3 có baseline 3,000 IOPS).
 
-📌 Con số "gp2/gp3 ≤16,000 IOPS" đã cũ: **gp2 vẫn tối đa 16,000**, nhưng **gp3 nay tới 80,000 IOPS, 2,000 MiB/s, 64 TiB**; gp3 **không burst** (baseline 3,000 IOPS + 125 MiB/s luôn có), rẻ hơn gp2 ~20%/GiB. **io2 Block Express** tới 256,000 IOPS. Đề cũ hỏi "cần >16,000 IOPS → io1/io2" thì vẫn chọn theo đề.
+📌 **gp2 tối đa 16,000 IOPS**; **gp3 tới 80,000 IOPS, 2,000 MiB/s, 64 TiB**, **không burst** (baseline 3,000 IOPS + 125 MiB/s luôn có), rẻ hơn gp2 ~20%/GiB. **io2 Block Express** tới 256,000 IOPS.
 
 ⚠️ **Boot volume:** gp2/gp3, io1/io2, Instance Store **dùng làm boot được**. **st1 và sc1 (HDD) KHÔNG làm boot volume được.**
 
@@ -561,7 +561,7 @@ DLQ = message xử lý lỗi nhiều lần → chuyển sang để điều tra.
 
 🎯 **Snowball → long-term archive rẻ nhất** → Snowball **phải target S3 bucket trước**, rồi **lifecycle zero-day (cùng ngày) chuyển sang Glacier Deep Archive**. KHÔNG target trực tiếp Glacier/Deep Archive Vault từ Snowball. Deep Archive rẻ hơn Glacier Flexible.
 
-📌 **Snow Family (Snowball Edge…) không nhận khách mới từ 07/11/2025.** Thay thế: **DataSync** (online), **AWS Data Transfer Terminal** (mang thiết bị tới điểm upload), **Outposts** (edge compute). Câu Snowball trong đề cũ vẫn hiểu là "chuyển offline khối lượng lớn".
+📌 **Snow Family (Snowball Edge…) không nhận khách mới từ 07/11/2025.** Chuyển dữ liệu lớn: **DataSync** (online), **AWS Data Transfer Terminal** (mang thiết bị tới điểm upload); edge compute: **Outposts**.
 
 ### Lift-and-shift server migration (VM → EC2)
 
@@ -777,7 +777,7 @@ DLQ = message xử lý lỗi nhiều lần → chuyển sang để điều tra.
 
 🎯 **Least-privilege IAM cho từng Pod trong EKS** (Pod A chỉ DynamoDB, Pod B chỉ S3) → **IRSA (IAM Roles for Service Accounts)**: tạo service account riêng mỗi service, map với IAM role scope hẹp (qua OIDC provider). KHÔNG gắn policy vào **EC2 instance profile của node** (mọi Pod trên node inherit hết — vi phạm least privilege). KHÔNG "gắn IAM policy vào Pod qua annotation" (không tồn tại). Kubernetes RBAC chỉ kiểm soát API trong cluster, không kiểm soát quyền AWS service.
 
-📌 Ngoài IRSA, EKS nay có **EKS Pod Identity** (cách gán IAM role cho Pod đơn giản hơn, không cần OIDC provider). Đề ghi IRSA vẫn đúng.
+📌 Gán IAM role cho Pod: **IRSA** hoặc **EKS Pod Identity** (đơn giản hơn, không cần OIDC provider).
 
 ⚠️ **Giá ECS:** **EC2 launch type** → trả **EC2 instances + EBS volumes** (không phí ECS thêm). **Fargate launch type** → trả **vCPU + memory** container yêu cầu (từ lúc pull image tới khi task dừng). Fargate = không quản server/patch.
 
@@ -833,7 +833,7 @@ DLQ = message xử lý lỗi nhiều lần → chuyển sang để điều tra.
 
 ### Kết nối VPC & on-prem
 
-🎯 Vài VPC (**< 10, cùng account**) giao tiếp private, rẻ nhất → **VPC Peering** (point-to-point, không transitive, không phí hạ tầng theo giờ). Nhiều VPC + on-prem qua **1 hub, ít overhead** → **Transit Gateway** (không phải Transit VPC — cũ, EC2 VPN, đắt).
+🎯 Vài VPC (**< 10, cùng account**) giao tiếp private, rẻ nhất → **VPC Peering** (point-to-point, không transitive, không phí hạ tầng theo giờ). Nhiều VPC + on-prem qua **1 hub, ít overhead** → **Transit Gateway** (không phải Transit VPC tự dựng bằng EC2 VPN, đắt).
 
 🎯 Nhiều VPC (25) + on-prem qua Direct Connect + full-mesh → **Transit Gateway** (attach tất cả, route propagation) + **Transit VIF** (từ DX gắn vào TGW). DX Gateway + VGW **không** cho transitive routing giữa VPC.
 
@@ -963,7 +963,7 @@ DLQ = message xử lý lỗi nhiều lần → chuyển sang để điều tra.
 
 ⚠️ Có thể đóng gói & deploy Lambda dưới dạng **container image**. Đừng over-provision timeout (chạy lâu ngoài ý muốn → tốn tiền). Deploy package lớn → cold-start chậm (nhưng dependencies vẫn gói chung, không tách riêng).
 
-📌 Lambda tính phí theo **1 ms** (không làm tròn 100 ms như tài liệu cũ).
+📌 Lambda tính phí theo **1 ms**.
 
 ---
 
@@ -1031,7 +1031,7 @@ DLQ = message xử lý lỗi nhiều lần → chuyển sang để điều tra.
 | **Lightsail** | Hosting đơn giản web/app nhỏ, giá gộp | Backend enterprise cần orchestration/scale → dùng ECS/EKS |
 | **Elastic Beanstalk** | PaaS tự provision EC2+ELB+ASG cho app | Khi cần serverless thuần / kiểm soát thấp |
 | **Step Functions** | Orchestrate workflow nhiều bước (state machine) | Cron/1 tác vụ đơn (thừa) → EventBridge + Fargate/Lambda |
-| **AWS MGN (Application Migration Service)** | Lift-and-shift VM on-prem → EC2 (agent, cutover) | Đây cho migration; DR → Elastic Disaster Recovery (tên cũ CloudEndure DR) |
+| **AWS MGN (Application Migration Service)** | Lift-and-shift VM on-prem → EC2 (agent, cutover) | Đây cho migration; DR → Elastic Disaster Recovery |
 | **Outposts / EKS Anywhere** | AWS trong data center on-prem (data residency) | Khi data được phép ở cloud (thừa chi phí) |
 | **Snowball Edge Compute** | Xử lý edge/offline tạm thời | Production dài hạn (không hợp) |
 
@@ -1062,7 +1062,7 @@ DLQ = message xử lý lỗi nhiều lần → chuyển sang để điều tra.
 | **DAX** | Cache in-memory cho **DynamoDB** | Không phải DynamoDB → dùng ElastiCache |
 | **RDS Custom** | RDS cho phép truy cập host OS | Không cần customize OS → RDS thường |
 | **DMS / DMS Serverless** | Replicate/migrate DB (full+CDC); Serverless tự scale | ETL batch → Glue; realtime CDC → DMS |
-| **AWS Data Pipeline** | Orchestrate data workflow (cũ; 📌 không nhận khách mới → Glue/Step Functions/MWAA) | Cross-Region replicate DynamoDB → Global Tables |
+| **AWS Data Pipeline** | Orchestrate data workflow (📌 không nhận khách mới → Glue/Step Functions/MWAA) | Cross-Region replicate DynamoDB → Global Tables |
 
 ### Analytics & AI/ML
 
@@ -1114,7 +1114,7 @@ DLQ = message xử lý lỗi nhiều lần → chuyển sang để điều tra.
 | **Secrets Manager / Parameter Store** | Lưu secret ngoài code (rotate) | Đừng hardcode/nhét credential vào EC2 |
 | **IAM Access Analyzer** | Phát hiện resource chia sẻ ra ngoài account/Org; unused access | (đúng cho external access); last-accessed → Access Advisor |
 | **IAM Access Advisor** | Service nào được dùng lần cuối (bỏ quyền thừa) | Không phát hiện external sharing |
-| **Security Hub** | Tổng hợp/xếp hạng findings bảo mật (📌 bản cũ nay tên Security Hub CSPM) | Không tự chặn SQLi/XSS (đó là WAF) |
+| **Security Hub** | Tổng hợp/xếp hạng findings bảo mật (📌 Security Hub CSPM: kiểm tra tư thế bảo mật; Security Hub: giải pháp hợp nhất) | Không tự chặn SQLi/XSS (đó là WAF) |
 | **Firewall Manager** | Quản trị tập trung rule WAF/Shield/SG/Network Firewall/DNS Firewall qua Org | Không áp NACL/Route Table; không phát hiện/chặn trực tiếp tấn công |
 | **S3 Storage Lens** | Dashboard cấu hình/dùng S3 toàn org (vd versioning) | Không trigger event (đó là S3 Event Notification) |
 
@@ -1213,7 +1213,7 @@ DLQ = message xử lý lỗi nhiều lần → chuyển sang để điều tra.
 
 ⚠️ **Bảng thời gian lấy về (thuộc lòng):** Standard / Standard-IA / **Glacier Instant Retrieval** = **tức thời (ms)**. **Glacier Flexible**: Expedited **1–5 phút nhưng CHỈ cho archive ≤ 250 MB**, Standard 3–5 giờ, Bulk 5–12 giờ. **Deep Archive**: 12–48 giờ. → Đề nói "phát/lấy trong vài phút" với **file lớn (GB)** thì **mọi tầng Glacier đều loại**, chỉ còn Standard/Standard-IA.
 
-⚠️ **Lifecycle theo tuổi object SAI** khi "một số object cũ vẫn hot, một số mới đã nguội" → dùng **Intelligent-Tiering**.
+⚠️ **Lifecycle theo tuổi object SAI** khi "một số object lâu ngày vẫn hot, một số mới đã nguội" → dùng **Intelligent-Tiering**.
 
 ⚠️ **S3 Storage Class Analysis chỉ ĐƯA DỮ LIỆU** để bạn tự viết lifecycle rule → thêm việc thủ công. Muốn tự động hoàn toàn → **Intelligent-Tiering**.
 
@@ -1247,7 +1247,7 @@ DLQ = message xử lý lỗi nhiều lần → chuyển sang để điều tra.
 
 ⚠️ **Memory optimized (R/X series)** cho SAP, SQL Server, in-memory workload.
 
-⚠️ **gp3 rẻ hơn gp2 ~20%** ở cùng hiệu năng, IOPS/throughput **tách rời dung lượng** → mặc định cũ (gp2) **không còn** là lựa chọn rẻ nhất.
+⚠️ **gp3 rẻ hơn gp2 ~20%** ở cùng hiệu năng, IOPS/throughput **tách rời dung lượng** → gp2 **không phải** lựa chọn rẻ nhất.
 
 ⚠️ **EC2 KHÔNG có khái niệm "Multi-AZ deployment"** như RDS.
 
@@ -1291,7 +1291,7 @@ DLQ = message xử lý lỗi nhiều lần → chuyển sang để điều tra.
 
 🎯 **DB dev chỉ dùng trong giờ làm việc / chỉ chạy ~2 giờ mỗi tuần** → **Aurora Serverless** (tự dừng/khởi động lại), đừng viết script bật/tắt.
 
-📌 **Aurora Serverless v2 nay scale về 0 ACU (auto-pause)** → bản v2 cũng "tự dừng" như v1 cũ.
+📌 **Aurora Serverless v2 scale về 0 ACU (auto-pause)** khi không có tải.
 
 🎯 **Migrate RDS → Aurora CÙNG engine, downtime gần bằng 0** → tạo **Aurora read replica từ RDS rồi promote**. **Khác engine** (Oracle → PostgreSQL, MySQL → PostgreSQL) mới cần **SCT/DMS Schema Conversion + DMS có CDC**. **DMS full-load KHÔNG bắt thay đổi phát sinh** → cần **full-load + CDC**.
 
@@ -1315,7 +1315,7 @@ DLQ = message xử lý lỗi nhiều lần → chuyển sang để điều tra.
 
 ⚠️ **DynamoDB Standard-IA**: rẻ về **storage** nhưng **read/write đắt hơn** → sai cho workload truy cập liên tục. **On-demand không đặt được RCU/WCU** → muốn **chốt ngân sách/ổn định** thì dùng **Provisioned**.
 
-📌 Docs: Standard-IA rẻ hơn **~60% storage** nhưng read/write đắt hơn **~25%** (không phải "gấp đôi" như tài liệu luyện cũ ghi).
+📌 Docs: Standard-IA rẻ hơn **~60% storage** nhưng read/write đắt hơn **~25%**.
 
 ⚠️ **DynamoDB deletion protection = NGĂN xoá bảng (phòng ngừa)**; **PITR = khôi phục SAU khi đã mất** ("quay lại bất kỳ thời điểm nào"). Đề nói "prevent" → chọn phòng ngừa.
 
@@ -1381,7 +1381,7 @@ DLQ = message xử lý lỗi nhiều lần → chuyển sang để điều tra.
 
 ### CloudFront / edge bổ sung
 
-⚠️ **Cache nhưng không phục vụ nội dung cũ sau deploy** → 2 chiến lược **thay thế nhau**: (a) **TTL ngắn** (nội dung đổi liên tục), hoặc (b) **`Cache-Control: max-age` dài + CloudFront invalidation** khi deploy. **`Cache-Control: private`** = cấm shared cache → ngược mục tiêu. **TTL = 0** = tắt cache.
+⚠️ **Cache nhưng không phục vụ phiên bản trước sau deploy** → 2 chiến lược **thay thế nhau**: (a) **TTL ngắn** (nội dung đổi liên tục), hoặc (b) **`Cache-Control: max-age` dài + CloudFront invalidation** khi deploy. **`Cache-Control: private`** = cấm shared cache → ngược mục tiêu. **TTL = 0** = tắt cache.
 
 ⚠️ **ACM public certificate** = **miễn phí**, dùng cho domain công khai, CloudFront bắt buộc lấy cert ở **us-east-1**. **ACM Private CA** (📌 nay tên **AWS Private CA**) ≈ **$400/tháng** và về bản chất không dùng cho custom domain công khai → sai cả về giá lẫn kỹ thuật.
 
@@ -1471,7 +1471,7 @@ DLQ = message xử lý lỗi nhiều lần → chuyển sang để điều tra.
 
 ### Messaging & tích hợp bổ sung
 
-🎯 **Giữ nguyên code messaging cũ dùng AMQP/MQTT/STOMP/JMS** → **Amazon MQ**. SQS/SNS **không nói AMQP** (phải viết lại theo API AWS).
+🎯 **Giữ nguyên code messaging hiện có dùng AMQP/MQTT/STOMP/JMS** → **Amazon MQ**. SQS/SNS **không nói AMQP** (phải viết lại theo API AWS).
 
 🎯 **Một message tới nhiều Lambda, có LỌC, ít overhead nhất** → **EventBridge rule (event pattern)** — lọc đặt ở **tầng định tuyến**, đừng để mỗi consumer tự lọc rồi bỏ phần lớn.
 
@@ -1485,7 +1485,7 @@ DLQ = message xử lý lỗi nhiều lần → chuyển sang để điều tra.
 
 ⚠️ **Kinesis Data Firehose là NEAR real-time** (buffer mặc định ~60–300 giây tùy đích) → đề đòi **real-time thật** thì chọn **Data Streams**. **Kinesis Video Streams** chỉ cho video. **Managed Service for Apache Flink** là nơi **xử lý** stream, không phải nơi **ingest**.
 
-📌 Firehose nay cho đặt **buffering interval = 0 giây** (giao trong vài giây) cho nhiều đích. Đề vẫn coi Firehose là "near real-time" → giữ cách chọn: real-time thật/replay/xử lý tùy biến = **Data Streams**.
+📌 Firehose cho đặt **buffering interval = 0 giây** (giao trong vài giây) cho nhiều đích. Cần replay, nhiều consumer, xử lý tùy biến → **Data Streams**.
 
 ⚠️ **Glue** có **security configuration** hỗ trợ CSE-KMS. **EMR** chạy trên EC2 → overhead cao hơn Glue.
 
@@ -1530,10 +1530,10 @@ DLQ = message xử lý lỗi nhiều lần → chuyển sang để điều tra.
 - Giữ traffic **cùng AZ / cùng Region** để cắt data transfer fee (cross-AZ ≈ $0.01/GB mỗi chiều).
 - **Storage class rẻ hơn không tự động đúng**: kiểm tra ràng buộc **retrieval time** và **số AZ** trước, giá chỉ xét **sau khi** ràng buộc được thoả. **IA đắt hơn Standard nếu vẫn truy cập nhiều**.
 - Hàng triệu object nhỏ → chi phí **request** có thể lớn hơn **storage** → gộp file.
-- **Chi phí tăng mà khối lượng dữ liệu không đổi** → tìm phần bị tính tiền mà không thấy: **incomplete multipart upload, version cũ, snapshot mồ côi**.
+- **Chi phí tăng mà khối lượng dữ liệu không đổi** → tìm phần bị tính tiền mà không thấy: **incomplete multipart upload, noncurrent version, snapshot mồ côi**.
 - Chi phí có thể **chuyển sang bên khác** (Requester Pays) chứ không nhất thiết phải giảm tuyệt đối.
 - Có thể đổi **mô hình định giá** để rẻ hơn (Aurora I/O-Optimized, on-demand ↔︎ provisioned) chứ không chỉ đổi kích thước.
-- Cùng hiệu năng thì chọn **thế hệ mới hơn** (gp3 thay gp2) — mặc định cũ thường đắt hơn.
+- Cùng hiệu năng thì chọn **thế hệ mới hơn** (gp3 thay gp2).
 - **Nhân bản dữ liệu ở hai nơi** (hai file system, hai cluster, copy S3 → FSx) là dấu hiệu đáp án **sai về chi phí**.
 - **Luôn ước lượng thời gian truyền** = (dung lượng × 8) ÷ băng thông; vượt deadline → chuyển sang giải pháp vật lý.
 - **Direct Connect mất hàng tuần–tháng provisioning** → tự loại khi đề nói "gấp / quickly".
@@ -1781,7 +1781,7 @@ DLQ = message xử lý lỗi nhiều lần → chuyển sang để điều tra.
 | DMS vs SCT vs Babelfish | DMS: chuyển data (full + CDC). SCT: chuyển schema khác engine. Babelfish: Aurora PostgreSQL hiểu T-SQL | "app T-SQL không sửa code" → Babelfish |
 | DMS vs DMS Serverless vs Glue | DMS: replication instance tự chọn size. DMS Serverless: tự scale. Glue: ETL batch | "tải biến động, CDC" → DMS Serverless |
 | Read replica + promote vs DMS | Cùng engine → replica rồi promote. Khác engine → DMS + schema conversion | "RDS MySQL → Aurora MySQL" → replica + promote |
-| MGN vs Elastic Disaster Recovery | MGN: migrate (rehost). DRS (tên cũ CloudEndure DR): DR liên tục | "lift-and-shift" → MGN |
+| MGN vs Elastic Disaster Recovery | MGN: migrate (rehost). DRS: DR liên tục | "lift-and-shift" → MGN |
 | DataSync vs Snowball vs Transfer Family vs File Gateway | DataSync: online, lịch định kỳ. Snowball: offline (📌 đóng với khách mới). Transfer Family: SFTP. File Gateway: on-prem dùng share lâu dài | "mạng kém, PB" → offline; "đồng bộ định kỳ" → DataSync |
 | ADS + Migration Hub vs MGN | ADS/Migration Hub: khảo sát, lập kế hoạch (📌 nay AWS Transform). MGN: thực hiện chuyển | "inventory server on-prem" → ADS |
 
@@ -1822,7 +1822,7 @@ DLQ = message xử lý lỗi nhiều lần → chuyển sang để điều tra.
 | T-SQL, ít sửa code | Babelfish for Aurora PostgreSQL |
 | cần quyền OS cho DB | RDS Custom |
 | không dùng password DB | IAM database authentication |
-| mã hóa DB cũ chưa mã hóa | Snapshot → copy encrypt → restore |
+| mã hóa DB đang chạy chưa mã hóa | Snapshot → copy encrypt → restore |
 | DB tải biến động / dùng thưa | Aurora Serverless v2 |
 | I/O nhiều, spiky | Aurora I/O-Optimized |
 | RPO/RTO giây–phút đa Region | Aurora Global Database / DynamoDB Global Tables |
@@ -1980,7 +1980,7 @@ DLQ = message xử lý lỗi nhiều lần → chuyển sang để điều tra.
 | SQS delay / message timer | 0–15 phút |
 | SQS retention | Mặc định 4 ngày, 1 phút – 14 ngày |
 | SQS long polling | Chờ tối đa 20s |
-| SQS message size | Tối đa 1 MiB (📌 trước đây 256 KB); batch tối đa 10 message |
+| SQS message size | Tối đa 1 MiB; batch tối đa 10 message |
 | SQS FIFO (không high throughput) | 300 op/s mỗi API action; 3,000 msg/s khi batch 10 |
 | Lambda | Timeout 15 phút; concurrency mặc định 1,000/Region; 5 layer, 250 MB unzipped; tính phí theo 1 ms |
 | DynamoDB | Item 400 KB; PITR 1–35 ngày (mặc định 35); Streams giữ 24h |
@@ -2106,6 +2106,6 @@ DLQ = message xử lý lỗi nhiều lần → chuyển sang để điều tra.
 - Launch configuration (account từ 01/10/2024 không tạo được): https://docs.aws.amazon.com/autoscaling/ec2/userguide/launch-configurations.html
 - Resource control policies (RCP): https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_policies_rcps.html
 - EKS Pod Identity: https://docs.aws.amazon.com/eks/latest/userguide/pod-identities.html
-- CloudWatch Logs agent cũ deprecated: https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/UsePreviousCloudWatchLogsAgent.html
+- CloudWatch Logs agent deprecated, dùng unified CloudWatch agent: https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/UsePreviousCloudWatchLogsAgent.html
 - QLDB ngừng 31/07/2025, Lookout for Vision ngừng 31/10/2025 (nguồn web, docs không còn trang): https://www.infoq.com/news/2024/07/aws-kill-qldb/ · https://aws.amazon.com/blogs/machine-learning/exploring-alternatives-and-seamlessly-migrating-data-from-amazon-lookout-for-vision/
 - Các mốc khác (Snow Family, Migration Hub/ADS, Shield SRT, Quick Sight, Elastic Disaster Recovery, Security Hub CSPM, Savings Plans 4 loại, X-Ray SDK maintenance, ElastiCache Valkey, public IPv4) đã đối chiếu khi viết CLF-C02, xem nguồn ở `CLF-C02/02-practice-exams/practice-exam-notes.md`.
