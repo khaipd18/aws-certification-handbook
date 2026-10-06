@@ -633,19 +633,30 @@
 
 ## 28. Support plans
 
-🎯 **Bảng tính năng:**
+🎯 **4 gói hiện hành:** **Basic** → **Business Support+** → **Enterprise** → **Unified Operations**.
 
-| Tính năng | Gói |
+| Gói | Giá tối thiểu | Phản hồi sự cố nặng nhất | Điểm nhận diện |
+| --- | --- | --- | --- |
+| **Basic** | Miễn phí, mọi account | Không có hỗ trợ kỹ thuật | Hỏi đáp account & billing 1-1, tăng service quota, forum, service health checks, docs |
+| **Business Support+** | **$29/tháng** mỗi account | **< 30 phút** (business-critical system down) | Trợ lý **AI (generative AI)** theo ngữ cảnh; **24x7 phone/web/chat** với **Cloud Support Engineers**; **500+ check Trusted Advisor**; **Support API**; hỗ trợ phần mềm bên thứ ba; mở case không giới hạn |
+| **Enterprise** | **$5,000/tháng** | **≤ 15 phút** (production-critical) | Mọi thứ của Business Support+ **+ TAM được chỉ định** + **AWS Security Incident Response** (không tính thêm) + strategic business review + **AWS Countdown** (hỗ trợ sự kiện quan trọng) |
+| **Unified Operations** | Theo yêu cầu & độ phức tạp workload | **5 phút** (critical incident) | **TAM + Domain Specialist Engineer** được chỉ định; **Infrastructure Event Management**; tư vấn kiến trúc ứng dụng; giám sát bảo mật & hiệu năng 24/7; **AWS Countdown Premium**; review workload quan trọng, runbook riêng |
+
+🎯 **Chọn nhanh:**
+
+| Yêu cầu trong đề | Gói |
 | --- | --- |
-| Account & billing 1-1, forum, service health checks, Health Dashboard, docs | **Basic** (mọi khách) |
-| Hỗ trợ kỹ thuật 24x7 qua phone/chat **rẻ nhất** | Đề cũ: **Business** · Hiện tại: **Business Support+** |
-| Full Trusted Advisor checks + **Support API** (tạo/đóng case bằng API) | Đề cũ: Business, Enterprise On-Ramp, Enterprise · Hiện tại: **Business Support+, Enterprise, Unified Operations** |
-| **TAM** được chỉ định, Concierge (billing) | **Enterprise** (đề cũ: On-Ramp có "pool of TAMs") |
-| Cloud Support **Engineers** vs **Associates** | Engineers từ Business trở lên; Associates ở Developer (cũ) |
-| Infrastructure Event Management | Đề cũ: Enterprise (On-Ramp 1 lần/năm, Business mua thêm); ❓ hiện liệt kê trong **Unified Operations** |
-| Client-side diagnostic tools, email giờ hành chính | Developer (cũ) |
+| Chỉ cần hỏi billing/account, tăng quota | **Basic** |
+| Hỗ trợ kỹ thuật 24x7 qua phone/chat **rẻ nhất** | **Business Support+** |
+| Toàn bộ check Trusted Advisor, **Support API** (tự động tạo/đóng case) | **Business Support+** trở lên |
+| Hỗ trợ cấu hình OS EC2, phần mềm bên thứ ba phổ biến | **Business Support+** trở lên |
+| **TAM** được chỉ định, phản hồi ≤ 15 phút | **Enterprise** |
+| Hỗ trợ ứng phó sự cố bảo mật (chiếm account, ransomware) đi kèm gói | **Enterprise** trở lên |
+| Phản hồi **5 phút**, kỹ sư chuyên môn theo workload, quản lý sự kiện hạ tầng (ra mắt, migration lớn) | **Unified Operations** |
 
-📌 **Developer, Business, Enterprise On-Ramp ngừng từ 01/01/2027.** Gói hiện hành: **Basic**, **Business Support+** (từ $29/tháng, phản hồi < 30 phút), **Enterprise** (từ $5k, TAM, < 15 phút, có Security Incident Response), **Unified Operations**.
+⚠️ **Trusted Advisor theo gói:** Basic chỉ có toàn bộ check **Service Limits** + một số check **Security** và **Fault Tolerance**, check Security phải **refresh thủ công**. Business Support+ trở lên: mọi check + Trusted Advisor API.
+
+⚠️ **Developer Support, Business Support, Enterprise On-Ramp ngừng từ 01/01/2027** (vẫn còn ở AWS GovCloud (US)). Developer/Business tự chọn nâng lên Business Support+; Enterprise On-Ramp được tự động nâng lên Enterprise trong năm 2026.
 
 ---
 
@@ -951,8 +962,10 @@
 | low-utilization EC2 without configuration | Trusted Advisor / Cost Explorer rightsizing |
 | rightsizing EC2, EBS, Lambda by ML | Compute Optimizer |
 | TAM | Enterprise |
-| cheapest 24x7 phone support | Business (cũ) / Business Support+ |
+| cheapest 24x7 phone support | Business Support+ |
 | Support API, full Trusted Advisor | Business Support+ trở lên |
+| security incident response included, 15-minute response | Enterprise |
+| 5-minute critical response, infrastructure event management | Unified Operations |
 | accept hours of data loss, cheapest DR | Backup & Restore |
 | scaled-down full copy always on | Warm Standby |
 
@@ -988,7 +1001,7 @@
 | Direct Connect | ≥ 1 tháng triển khai |
 | Global Accelerator | 2 static anycast IP |
 | Aurora | Nhanh hơn MySQL tới 5 lần; tới 256 TiB |
-| Business Support+ / Enterprise | Từ $29/tháng, < 30 phút / từ $5k, < 15 phút |
+| Business Support+ / Enterprise / Unified Operations | $29/tháng, < 30 phút / $5,000/tháng, ≤ 15 phút / theo yêu cầu, 5 phút |
 | Gói Developer, Business, Enterprise On-Ramp | Ngừng 01/01/2027 |
 
 ### Đáp án BẤT KHẢ THI → loại ngay
@@ -1026,6 +1039,8 @@
 ### Nguồn đã đối chiếu (các ghi chú 📌 và ❓)
 
 - AWS Support Plans (gói hiện hành, Developer/Business/On-Ramp ngừng 01/01/2027): https://docs.aws.amazon.com/awssupport/latest/user/aws-support-plans.html
+- AWS Unified Operations (phản hồi 5 phút): https://docs.aws.amazon.com/awssupport/latest/user/unified-operations-intro.html
+- Trusted Advisor theo gói Support: https://docs.aws.amazon.com/awssupport/latest/user/trusted-advisor.html
 - Trusted Advisor (Basic: Service Limits + một số Security/Fault Tolerance): https://docs.aws.amazon.com/awssupport/latest/user/trusted-advisor.html
 - Snowball Edge availability change (không nhận khách mới): https://docs.aws.amazon.com/snowball/latest/developer-guide/snowball-edge-availability-change.html
 - IAM MFA (3 loại MFA, MFA bắt buộc cho root): https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_mfa.html
